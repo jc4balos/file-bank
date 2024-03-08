@@ -16,5 +16,8 @@ public class FileDtoView {
     private LocalDateTime createdDateTime;
     private LocalDateTime updatedDateTime;
     private Long ownerId;
+    private Boolean allowModifyFile;
+    private Boolean allowDeleteFile;
+    private Boolean allowViewFile;
 
 }
