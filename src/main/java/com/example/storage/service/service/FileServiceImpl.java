@@ -51,40 +51,38 @@ public class FileServiceImpl implements FileService {
             String encryptedFileName = fileEncryptor.encryptFileName(originalFileName);
             String extension = null;
 
-            if (!fileDto.getMultipartFile().isEmpty()) {
-                int i = originalFileName.lastIndexOf('.');
-                if (i > 0) {
-                    extension = originalFileName.substring(i + 1);
-                }
-
-                String encryptedFileNameWithExtension = encryptedFileName + "." + extension;
-
-                String fullPath = Paths
-                        .get(folderPath, encryptedFileNameWithExtension)
-                        .toString();
-
-                System.out.println("fullPATH" + fullPath);
-
-                File destinationFile = new File(fullPath);
-
-                file.setFilePath(fullPath);
-                file.setFileType(extension);
-                file.setActive(true);
-
-                multipartFile.transferTo(destinationFile);
-
-                fileRepository.save(file);
-                FileDtoView fileDtoView = fileMapper.toDtoView(file);
-
-                return CompletableFuture.completedFuture(fileDtoView);
-            } else if (extension == null) {
+            if (multipartFile.isEmpty()) {
                 throw new FileNotFoundException("No File found");
             }
+
+            int i = originalFileName.lastIndexOf('.');
+            if (i > 0) {
+                extension = originalFileName.substring(i + 1);
+            }
+
+            String encryptedFileNameWithExtension = encryptedFileName + "." + extension;
+
+            String fullPath = Paths
+                    .get(folderPath, encryptedFileNameWithExtension)
+                    .toString();
+
+            System.out.println("fullPATH" + fullPath);
+
+            File destinationFile = new File(fullPath);
+
+            file.setFilePath(fullPath);
+            file.setFileType(extension);
+            file.setActive(true);
+
+            multipartFile.transferTo(destinationFile);
+
+            fileRepository.save(file);
+            FileDtoView fileDtoView = fileMapper.toDtoView(file);
+
+            return CompletableFuture.completedFuture(fileDtoView);
 
         } catch (Exception e) {
             throw new IllegalArgumentException("File not found");
         }
-        return null;
     }
-
 }
