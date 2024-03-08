@@ -59,6 +59,7 @@ public class FolderMapper {
             folderDtoView.setAllowModifyFolder(folder.getAllowModifyFolder());
             folderDtoView.setAllowDeleteFolder(folder.getAllowDeleteFolder());
             folderDtoView.setAllowViewFolder(folder.getAllowViewFolder());
+            folderDtoView.setAllowAddFile(folder.getAllowAddFile());
             foldersListDtoView.add(folderDtoView);
         }
         return foldersListDtoView;

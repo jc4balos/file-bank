@@ -22,5 +22,9 @@ public class FolderDtoView {
     private Boolean allowModifyFolder;
     private Boolean allowDeleteFolder;
     private Boolean allowViewFolder;
+    private Boolean allowAddFile;
+    private Boolean allowModifyFile;
+    private Boolean allowDeleteFile;
+    private Boolean allowViewFile;
 
 }
