@@ -1,6 +1,6 @@
 package com.example.storage.service.service;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ public interface FolderService {
 
     public FolderDto createFolder(FolderDto folderDto, Long userId);
 
-    public List<?> getAllFiles(Long folderId, Long userId); // Where folder view
+    public Map<String, Object> getAllFiles(Long folderId, Long userId); // Where folder view
     // is enabled
 
     // public String deleteFolder(Long folderId, Long userId, HttpServletRequest
