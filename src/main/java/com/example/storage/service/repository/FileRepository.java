@@ -8,6 +8,4 @@ public interface FileRepository extends JpaRepository<FileData, Long> {
 
     FileData findByFileName(String fileName);
 
-    FileData findByFolderIdAndAccessLevel(Long folderId, Long accessLevelId);
-
 }
