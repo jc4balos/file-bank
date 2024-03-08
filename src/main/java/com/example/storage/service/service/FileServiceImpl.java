@@ -66,8 +66,6 @@ public class FileServiceImpl implements FileService {
                     .get(folderPath, encryptedFileNameWithExtension)
                     .toString();
 
-            System.out.println("fullPATH" + fullPath);
-
             File destinationFile = new File(fullPath);
 
             file.setFilePath(fullPath);
