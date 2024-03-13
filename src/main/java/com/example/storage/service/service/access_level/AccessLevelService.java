@@ -1,11 +1,8 @@
-package com.example.storage.service.service;
-
-import java.util.List;
+package com.example.storage.service.service.access_level;
 
 import org.springframework.stereotype.Service;
 
 import com.example.storage.service.dto.CreateAccessLevelDto;
-import com.example.storage.service.model.AccessLevel;
 
 @Service
 public interface AccessLevelService {

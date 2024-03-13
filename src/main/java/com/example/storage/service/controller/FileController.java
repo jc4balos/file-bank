@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.example.storage.service.dto.FileDto;
 import com.example.storage.service.dto.FileDtoView;
 import com.example.storage.service.exception.ApplicationExceptionHandler;
-import com.example.storage.service.service.FileService;
+import com.example.storage.service.service.file.FileService;
 
 @Controller
 public class FileController {

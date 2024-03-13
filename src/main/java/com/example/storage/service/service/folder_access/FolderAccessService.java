@@ -1,4 +1,4 @@
-package com.example.storage.service.service;
+package com.example.storage.service.service.folder_access;
 
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.example.storage.service.service;
+package com.example.storage.service.service.file;
 
 import java.io.File;
 import java.io.FileNotFoundException;

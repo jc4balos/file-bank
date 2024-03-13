@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.storage.service.dto.FolderDto;
 import com.example.storage.service.exception.ApplicationExceptionHandler;
-import com.example.storage.service.service.FolderService;
+import com.example.storage.service.service.folder.FolderService;
 
 @Controller
 public class FolderController {

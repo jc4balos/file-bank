@@ -1,4 +1,4 @@
-package com.example.storage.service.service;
+package com.example.storage.service.service.folder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +20,7 @@ import com.example.storage.service.repository.FileRepository;
 import com.example.storage.service.repository.FolderAccessRepository;
 import com.example.storage.service.repository.FolderRepository;
 import com.example.storage.service.repository.UserRepository;
+import com.example.storage.service.service.folder_access.FolderAccessServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 

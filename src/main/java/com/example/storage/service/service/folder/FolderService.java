@@ -1,4 +1,4 @@
-package com.example.storage.service.service;
+package com.example.storage.service.service.folder;
 
 import java.util.Map;
 

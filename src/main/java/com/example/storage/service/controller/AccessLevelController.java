@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.storage.service.dto.CreateAccessLevelDto;
-import com.example.storage.service.service.AccessLevelService;
+import com.example.storage.service.service.access_level.AccessLevelService;
 
 @Controller
 public class AccessLevelController {
