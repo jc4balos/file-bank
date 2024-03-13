@@ -1,4 +1,4 @@
-package com.example.storage.service.service;
+package com.example.storage.service.service.user;
 
 import java.util.HashMap;
 import java.util.List;

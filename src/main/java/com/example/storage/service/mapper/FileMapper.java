@@ -1,9 +1,13 @@
 package com.example.storage.service.mapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.example.storage.service.dto.FileDto;
 import com.example.storage.service.dto.FileDtoView;
+import com.example.storage.service.model.FileAccess;
 import com.example.storage.service.model.FileData;
 import com.example.storage.service.model.Folder;
 import com.example.storage.service.model.User;
@@ -53,17 +57,34 @@ public class FileMapper {
         fileDtoView
                 .setOwnerFullName(fileData.getOwner().getFirstName() + " " + fileData.getOwner().getMiddleName() + " "
                         + fileData.getOwner().getLastName());
+        fileDtoView.setOwnerUserName(fileData.getOwner().getUserName());
         return fileDtoView;
     }
 
-    // public List<FileDtoView> toDtoViewWithPerms(List<FolderAccess> fileList){
+    public List<FileDtoView> toDtoViewWithPerms(List<FileAccess> fileList) {
 
-    // List<FileDtoView> filesListDtoView = new ArrayList<>();
-    // for (FolderAccess file : fileList){
-    // file.setFolder
+        List<FileDtoView> filesListDtoView = new ArrayList<>();
+        for (FileAccess file : fileList) {
+            FileDtoView fileDtoView = new FileDtoView();
+            fileDtoView.setFileId(file.getFileData().getFileId());
+            fileDtoView.setFileName(file.getFileData().getFileName());
+            fileDtoView.setDescription(file.getFileData().getDescription());
+            fileDtoView.setFolderId(file.getFileData().getFolder().getFolderId());
+            fileDtoView.setFilePath(file.getFileData().getFilePath());
+            fileDtoView.setFileType(file.getFileData().getFileType());
+            fileDtoView.setCreatedDateTime(file.getFileData().getCreatedDateTime());
+            fileDtoView.setUpdatedDateTime(file.getFileData().getUpdatedDateTime());
+            fileDtoView.setOwnerFullName(file.getFileData().getOwner().getFirstName() + " "
+                    + file.getFileData().getOwner().getMiddleName() + " "
+                    + file.getFileData().getOwner().getLastName());
+            fileDtoView.setOwnerUserName(file.getFileData().getOwner().getUserName());
+            fileDtoView.setAllowModifyFile(file.getAllowModifyFile());
+            fileDtoView.setAllowDeleteFile(file.getAllowDeleteFile());
+            fileDtoView.setAllowViewFile(file.getAllowViewFile());
+            filesListDtoView.add(fileDtoView);
 
-    // }
-
-    // }
+        }
+        return filesListDtoView;
+    }
 
 }

@@ -19,7 +19,7 @@ import com.example.storage.service.dto.UserDto;
 import com.example.storage.service.exception.ApplicationExceptionHandler;
 import com.example.storage.service.exception.CredentialsInvalidException;
 import com.example.storage.service.exception.UserNameAlreadyExistsException;
-import com.example.storage.service.service.UserService;
+import com.example.storage.service.service.user.UserService;
 
 @Controller
 public class UserController {

@@ -3,12 +3,15 @@ package com.example.storage.service.service.file;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,8 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.storage.service.dto.FileDto;
 import com.example.storage.service.dto.FileDtoView;
 import com.example.storage.service.mapper.FileMapper;
+import com.example.storage.service.model.AccessLevel;
 import com.example.storage.service.model.FileData;
+import com.example.storage.service.repository.AccessLevelRepository;
 import com.example.storage.service.repository.FileRepository;
+import com.example.storage.service.service.file_access.FileAccessService;
 import com.example.storage.service.util.FileEncryptor;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +37,10 @@ public class FileServiceImpl implements FileService {
     private final FileRepository fileRepository;
     private final FileMapper fileMapper;
     private final Validator validator;
+    private final AccessLevelRepository accessLevelRepository;
+
+    @Autowired
+    private FileAccessService fileAccessService;
 
     @Async
     public CompletableFuture<FileDtoView> createFile(FileDto fileDto) {
@@ -75,7 +85,17 @@ public class FileServiceImpl implements FileService {
             multipartFile.transferTo(destinationFile);
 
             fileRepository.save(file);
+
             FileDtoView fileDtoView = fileMapper.toDtoView(file);
+
+            Long fileId = file.getFileId();
+
+            List<Long> accessLevelIds = accessLevelRepository.findAll().stream().map(AccessLevel::getAccessLevelId)
+                    .collect(Collectors.toList());
+
+            for (Long accessLevelIdItem : accessLevelIds) {
+                fileAccessService.addFileAccess(fileId, accessLevelIdItem);
+            }
 
             return CompletableFuture.completedFuture(fileDtoView);
 

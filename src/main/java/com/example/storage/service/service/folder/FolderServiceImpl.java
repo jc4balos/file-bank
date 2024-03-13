@@ -8,15 +8,18 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.storage.service.dto.FileDtoView;
 import com.example.storage.service.dto.FolderDto;
 import com.example.storage.service.dto.FolderDtoView;
+import com.example.storage.service.mapper.FileMapper;
 import com.example.storage.service.mapper.FolderMapper;
 import com.example.storage.service.model.AccessLevel;
+import com.example.storage.service.model.FileAccess;
 import com.example.storage.service.model.Folder;
 import com.example.storage.service.model.FolderAccess;
 import com.example.storage.service.model.User;
 import com.example.storage.service.repository.AccessLevelRepository;
-import com.example.storage.service.repository.FileRepository;
+import com.example.storage.service.repository.FileAccessRepository;
 import com.example.storage.service.repository.FolderAccessRepository;
 import com.example.storage.service.repository.FolderRepository;
 import com.example.storage.service.repository.UserRepository;
@@ -31,11 +34,15 @@ public class FolderServiceImpl implements FolderService {
     private final FolderRepository folderRepository;
     private final UserRepository userRepository;
     private final AccessLevelRepository accessLevelRepository;
-    private final FileRepository fileRepository;
+
     private final FolderAccessRepository folderAccessRepository;
+    private final FileAccessRepository fileAccessRepository;
 
     @Autowired
     private FolderMapper folderMapper;
+
+    @Autowired
+    private FileMapper fileMapper;
 
     @Autowired
     private FolderAccessServiceImpl folderAccessServiceImpl;
@@ -45,7 +52,6 @@ public class FolderServiceImpl implements FolderService {
         User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User does not exist"));
         Folder folder = new Folder();
-        Long accessLevelId = owner.getAccessLevelId();
 
         List<Long> accessLevelIds = accessLevelRepository.findAll().stream().map(AccessLevel::getAccessLevelId)
                 .collect(Collectors.toList());
@@ -85,12 +91,13 @@ public class FolderServiceImpl implements FolderService {
 
         List<FolderDtoView> mappedFolders = folderMapper.toFolderDtoWithPerms(folders);
 
-        // List<FileData> files =
-        // fileRepository.findFilesByFolderParentIdAndAccessLevel(userAccessLevelId,
-        // folderId);
+        List<FileAccess> files = fileAccessRepository.findFilesByFolderParentIdAndAccessLevel(userAccessLevelId,
+                folderId);
+
+        List<FileDtoView> mappedFiles = fileMapper.toDtoViewWithPerms(files);
 
         response.put("folders", mappedFolders);
-        // response.put("files", files);
+        response.put("files", mappedFiles);
         return response;
     }
 }
