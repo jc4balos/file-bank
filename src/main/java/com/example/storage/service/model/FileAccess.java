@@ -24,7 +24,7 @@ public class FileAccess {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, name = "file_access_id")
-    private Long folderAccessId;
+    private Long fileAccessId;
 
     @ManyToOne(targetEntity = FileData.class)
     @JoinColumn(nullable = false, name = "file_id")
