@@ -25,9 +25,9 @@ public class FolderMapper {
         folderDtoView.setCreatedDateTime(folder.getCreatedDateTime());
         folderDtoView.setUpdatedDateTime(folder.getUpdatedDateTime());
         folderDtoView.setOwnerId(folder.getOwner().getUserId());
-        folderDtoView.setOwnerFirstName(folder.getOwner().getFirstName());
-        folderDtoView.setOwnerMiddleName(folder.getOwner().getMiddleName());
-        folderDtoView.setOwnerLastName(folder.getOwner().getLastName());
+        folderDtoView.setOwnerFullName(folder.getOwner().getFirstName() + " " + folder.getOwner().getMiddleName() + " "
+                + folder.getOwner().getLastName());
+
         folderDtoView.setOwnerUsername(folder.getOwner().getUserName());
         return folderDtoView;
     }
@@ -51,15 +51,16 @@ public class FolderMapper {
             folderDtoView.setCreatedDateTime(folder.getFolder().getCreatedDateTime());
             folderDtoView.setUpdatedDateTime(folder.getFolder().getUpdatedDateTime());
             folderDtoView.setOwnerId(folder.getFolder().getOwner().getUserId());
-            folderDtoView.setOwnerFirstName(folder.getFolder().getOwner().getFirstName());
-            folderDtoView.setOwnerMiddleName(folder.getFolder().getOwner().getMiddleName());
-            folderDtoView.setOwnerLastName(folder.getFolder().getOwner().getLastName());
+            folderDtoView.setOwnerFullName(
+                    folder.getFolder().getOwner().getFirstName() + " " + folder.getFolder().getOwner().getMiddleName()
+                            + " " + folder.getFolder().getOwner().getLastName());
             folderDtoView.setOwnerUsername(folder.getFolder().getOwner().getUserName());
             folderDtoView.setAllowAddFolder(folder.getAllowAddFolder());
             folderDtoView.setAllowModifyFolder(folder.getAllowModifyFolder());
             folderDtoView.setAllowDeleteFolder(folder.getAllowDeleteFolder());
             folderDtoView.setAllowViewFolder(folder.getAllowViewFolder());
             folderDtoView.setAllowAddFile(folder.getAllowAddFile());
+
             foldersListDtoView.add(folderDtoView);
         }
         return foldersListDtoView;

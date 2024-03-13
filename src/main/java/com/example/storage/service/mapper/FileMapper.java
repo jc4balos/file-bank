@@ -54,4 +54,14 @@ public class FileMapper {
         return fileDtoView;
     }
 
+    // public List<FileDtoView> toDtoViewWithPerms(List<FolderAccess> fileList){
+
+    // List<FileDtoView> filesListDtoView = new ArrayList<>();
+    // for (FolderAccess file : fileList){
+    // file.setFolder
+
+    // }
+
+    // }
+
 }

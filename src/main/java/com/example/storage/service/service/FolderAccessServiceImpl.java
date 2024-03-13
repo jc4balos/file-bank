@@ -31,12 +31,9 @@ public class FolderAccessServiceImpl implements FolderAccessService {
         folderAccess.setAccessLevel(accessLevel);
         folderAccess.setAllowAddFolder(true);
         folderAccess.setAllowModifyFolder(true);
-        folderAccess.setAllowViewFolder(false);
+        folderAccess.setAllowViewFolder(true);
         folderAccess.setAllowDeleteFolder(true);
         folderAccess.setAllowAddFile(true);
-        folderAccess.setAllowModifyFile(true);
-        folderAccess.setAllowViewFile(true);
-        folderAccess.setAllowDeleteFile(true);
 
         folderAccessRepository.save(folderAccess);
         return "Access added for folder " + folder.getFolderName() + " with access level "

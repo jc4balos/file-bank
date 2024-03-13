@@ -16,8 +16,9 @@ import com.example.storage.service.model.Folder;
 import com.example.storage.service.model.FolderAccess;
 import com.example.storage.service.model.User;
 import com.example.storage.service.repository.AccessLevelRepository;
+import com.example.storage.service.repository.FileRepository;
+import com.example.storage.service.repository.FolderAccessRepository;
 import com.example.storage.service.repository.FolderRepository;
-import com.example.storage.service.repository.FoldersAndFilesRepository;
 import com.example.storage.service.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -27,9 +28,10 @@ import lombok.RequiredArgsConstructor;
 public class FolderServiceImpl implements FolderService {
 
     private final FolderRepository folderRepository;
-    private final FoldersAndFilesRepository foldersAndFilesRepository;
     private final UserRepository userRepository;
     private final AccessLevelRepository accessLevelRepository;
+    private final FileRepository fileRepository;
+    private final FolderAccessRepository folderAccessRepository;
 
     @Autowired
     private FolderMapper folderMapper;
@@ -76,12 +78,18 @@ public class FolderServiceImpl implements FolderService {
         Long userAccessLevelId = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User does not exist")).getAccessLevelId();
 
-        List<FolderAccess> folders = foldersAndFilesRepository.findByFolderParentIdAndAccessLevel(userAccessLevelId,
+        List<FolderAccess> folders = folderAccessRepository.findFoldersByFolderParentIdAndAccessLevel(
+                userAccessLevelId,
                 folderId);
 
         List<FolderDtoView> mappedFolders = folderMapper.toFolderDtoWithPerms(folders);
 
+        // List<FileData> files =
+        // fileRepository.findFilesByFolderParentIdAndAccessLevel(userAccessLevelId,
+        // folderId);
+
         response.put("folders", mappedFolders);
+        // response.put("files", files);
         return response;
     }
 }

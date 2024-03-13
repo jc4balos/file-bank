@@ -14,17 +14,12 @@ public class FolderDtoView {
     private LocalDateTime createdDateTime;
     private LocalDateTime updatedDateTime;
     private Long ownerId;
-    private String ownerFirstName;
-    private String ownerMiddleName;
-    private String ownerLastName;
+    private String ownerFullName;
     private String ownerUsername;
     private Boolean allowAddFolder;
     private Boolean allowModifyFolder;
     private Boolean allowDeleteFolder;
     private Boolean allowViewFolder;
     private Boolean allowAddFile;
-    private Boolean allowModifyFile;
-    private Boolean allowDeleteFile;
-    private Boolean allowViewFile;
 
 }

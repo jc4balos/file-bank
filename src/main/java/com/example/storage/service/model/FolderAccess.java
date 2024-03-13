@@ -49,12 +49,4 @@ public class FolderAccess {
     @Column(nullable = false, name = "allow_add_file")
     private Boolean allowAddFile;
 
-    @Column(nullable = false, name = "allow_modify_file")
-    private Boolean allowModifyFile;
-
-    @Column(nullable = false, name = "allow_delete_file")
-    private Boolean allowDeleteFile;
-
-    @Column(nullable = false, name = "allow_view_file")
-    private Boolean allowViewFile;
 }
