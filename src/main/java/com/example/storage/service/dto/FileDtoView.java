@@ -15,6 +15,10 @@ public class FileDtoView {
     private String fileType;
     private LocalDateTime createdDateTime;
     private LocalDateTime updatedDateTime;
-    private Long ownerId;
+    private String ownerFullName;
+    private String ownerUserName;
+    private Boolean allowModifyFile;
+    private Boolean allowDeleteFile;
+    private Boolean allowViewFile;
 
 }

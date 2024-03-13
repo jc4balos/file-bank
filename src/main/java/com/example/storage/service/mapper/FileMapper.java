@@ -50,7 +50,9 @@ public class FileMapper {
         fileDtoView.setFileType(fileData.getFileType());
         fileDtoView.setCreatedDateTime(fileData.getCreatedDateTime());
         fileDtoView.setUpdatedDateTime(fileData.getUpdatedDateTime());
-        fileDtoView.setOwnerId(fileData.getOwner().getUserId());
+        fileDtoView
+                .setOwnerFullName(fileData.getOwner().getFirstName() + " " + fileData.getOwner().getMiddleName() + " "
+                        + fileData.getOwner().getLastName());
         return fileDtoView;
     }
 
