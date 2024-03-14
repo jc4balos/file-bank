@@ -28,6 +28,7 @@ public class AccessLevelServiceImpl implements AccessLevelService {
 
         if (accessLevelName != null || !accessLevelName.isEmpty()) {
             accessLevel.setAccessLevelName(accessLevelName);
+            accessLevel.setActive(true);
             accessLevelRepository.save(accessLevel);
             return "Access level " + accessLevelName + " added";
         } else {
