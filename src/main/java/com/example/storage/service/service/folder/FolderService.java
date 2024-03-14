@@ -12,6 +12,8 @@ public interface FolderService {
     public FolderDto createFolder(FolderDto folderDto, Long userId);
 
     public Map<String, Object> getAllFiles(Long folderId, Long userId); // Where folder view
+
+    public Map<String, Object> searchFilesAndFolders(Long folderId, Long userId, String search);
     // is enabled
 
     // public String deleteFolder(Long folderId, Long userId, HttpServletRequest

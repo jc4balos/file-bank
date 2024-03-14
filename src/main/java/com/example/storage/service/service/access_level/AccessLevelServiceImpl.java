@@ -39,7 +39,14 @@ public class AccessLevelServiceImpl implements AccessLevelService {
 
     @Override
     public List<AccessLevelDtoView> getAllAccessLevels() {
-        return accessLevelRepository.findAll().stream()
+        return accessLevelRepository.findByActiveAccessLevel().stream()
+                .map(accessLevelMapper::toAccessLevelDtoView)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AccessLevelDtoView> getDeactivatedAccessLevels() {
+        return accessLevelRepository.findByDeactivatedAccessLevel().stream()
                 .map(accessLevelMapper::toAccessLevelDtoView)
                 .collect(Collectors.toList());
     }

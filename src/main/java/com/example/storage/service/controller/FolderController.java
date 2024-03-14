@@ -55,4 +55,14 @@ public class FolderController {
                 HttpStatus.OK);
 
     }
+
+    @GetMapping("/api/v1/folder/get-files-and-folders/search")
+    public ResponseEntity<?> searchFilesAndFolders(@RequestParam Long folderId,
+            @RequestParam Long userId, @RequestParam String search) {
+
+        return new ResponseEntity<>(folderService.searchFilesAndFolders(folderId, userId, search),
+                HttpStatus.OK);
+
+    }
+
 }

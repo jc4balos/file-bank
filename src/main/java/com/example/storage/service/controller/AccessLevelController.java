@@ -30,6 +30,11 @@ public class AccessLevelController {
         return new ResponseEntity<>(accessLevelService.getAllAccessLevels(), HttpStatus.OK);
     }
 
+    @GetMapping("/api/v1/access-level/get-deactivated-access-levels")
+    public ResponseEntity<?> getDeactivatedAccessLevels() {
+        return new ResponseEntity<>(accessLevelService.getDeactivatedAccessLevels(), HttpStatus.OK);
+    }
+
     @PatchMapping("/api/v1/access-level/delete-access-level")
     public ResponseEntity<?> deleteAccessLevel(@RequestParam Long userId, @RequestParam Long accessLevelId) {
         return new ResponseEntity<>(accessLevelService.deactivateAccessLevel(userId, accessLevelId), HttpStatus.OK);

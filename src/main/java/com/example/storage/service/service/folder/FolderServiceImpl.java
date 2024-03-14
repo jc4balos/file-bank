@@ -100,4 +100,30 @@ public class FolderServiceImpl implements FolderService {
         response.put("files", mappedFiles);
         return response;
     }
+
+    @Override
+    public Map<String, Object> searchFilesAndFolders(Long folderId, Long userId, String search) {
+        Map<String, Object> response = new HashMap<>();
+
+        String fileToSearch = search;
+        String folderToSearch = search;
+
+        Long userAccessLevelId = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User does not exist")).getAccessLevelId();
+
+        List<FolderAccess> folders = folderAccessRepository.searchFoldersByFolderParentIdAndAccessLevel(
+                userAccessLevelId,
+                folderId, folderToSearch);
+
+        List<FolderDtoView> mappedFolders = folderMapper.toFolderDtoWithPerms(folders);
+
+        List<FileAccess> files = fileAccessRepository.searchFilesByFolderParentIdAndAccessLevel(userAccessLevelId,
+                folderId, fileToSearch);
+
+        List<FileDtoView> mappedFiles = fileMapper.toDtoViewWithPerms(files);
+
+        response.put("folders", mappedFolders);
+        response.put("files", mappedFiles);
+        return response;
+    }
 }
