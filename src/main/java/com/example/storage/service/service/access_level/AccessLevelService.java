@@ -14,8 +14,8 @@ public interface AccessLevelService {
 
     public List<AccessLevelDtoView> getAllAccessLevels();
 
-    // public String deactivateAccessLevel(Long userId, Long accessLevelId);
+    public String deactivateAccessLevel(Long userId, Long accessLevelId);
 
-    // public String activateAccessLevel(Long userId, Long accessLevelId);
+    public String restoreAccessLevel(Long userId, Long accessLevelId);
 
 }

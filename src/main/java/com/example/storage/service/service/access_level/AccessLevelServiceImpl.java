@@ -44,4 +44,28 @@ public class AccessLevelServiceImpl implements AccessLevelService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public String deactivateAccessLevel(Long userId, Long accessLevelId) {
+        AccessLevel accessLevel = accessLevelRepository.findById(accessLevelId).orElse(null);
+        if (accessLevel != null) {
+            accessLevel.setActive(false);
+            accessLevelRepository.save(accessLevel);
+            return "Access level " + accessLevel.getAccessLevelName() + " deactivated";
+        } else {
+            return "Access level not found";
+        }
+    }
+
+    @Override
+    public String restoreAccessLevel(Long userId, Long accessLevelId) {
+        AccessLevel accessLevel = accessLevelRepository.findById(accessLevelId).orElse(null);
+        if (accessLevel != null) {
+            accessLevel.setActive(true);
+            accessLevelRepository.save(accessLevel);
+            return "Access level " + accessLevel.getAccessLevelName() + " restored";
+        } else {
+            return "Access level not found";
+        }
+    }
+
 }
