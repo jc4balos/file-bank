@@ -39,7 +39,7 @@ public class LoadDatabase {
 
             Long rootFolderId = 1L;
             if (!folderRepository.existsById(rootFolderId)) {
-                Folder rootFolder = new Folder(rootFolderId, "root", "", 0L, LocalDateTime.now(), LocalDateTime.now(),
+                Folder rootFolder = new Folder(rootFolderId, "root", "", 1L, LocalDateTime.now(), LocalDateTime.now(),
                         true, userRepository.findById(adminUserId).orElse(null));
                 folderRepository.save(rootFolder);
             }
