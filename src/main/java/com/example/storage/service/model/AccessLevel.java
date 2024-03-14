@@ -28,4 +28,7 @@ public class AccessLevel {
     @Column(nullable = false, unique = true, length = 100, name = "access_level_name")
     private String accessLevelName;
 
+    @Column(nullable = false, name = "active")
+    private Boolean active;
+
 }

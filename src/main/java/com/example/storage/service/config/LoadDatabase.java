@@ -26,7 +26,7 @@ public class LoadDatabase {
         return args -> {
             Long adminAccessLevelId = 1L;
             if (!accessLevelRepository.existsById(adminAccessLevelId)) {
-                AccessLevel adminAccessLevel = new AccessLevel(adminAccessLevelId, "administrator");
+                AccessLevel adminAccessLevel = new AccessLevel(adminAccessLevelId, "administrator", true);
                 accessLevelRepository.save(adminAccessLevel);
             }
 
