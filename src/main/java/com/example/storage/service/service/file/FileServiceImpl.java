@@ -3,7 +3,9 @@ package com.example.storage.service.service.file;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -102,6 +104,30 @@ public class FileServiceImpl implements FileService {
         } catch (Exception e) {
             throw new IllegalArgumentException("File not found");
         }
+    }
+
+    @Override
+    public Map<String, String> deleteFile(Long fileId, Long userId) {
+        FileData file = fileRepository.findById(fileId)
+                .orElseThrow(() -> new IllegalArgumentException("File not found"));
+
+        file.setActive(false);
+        fileRepository.save(file);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "File " + file.getFileName() + " moved to trash");
+        return response;
+    }
+
+    @Override
+    public FileDtoView restoreFile(Long fileId, Long userId) {
+        FileData file = fileRepository.findById(fileId)
+                .orElseThrow(() -> new IllegalArgumentException("File not found"));
+
+        file.setActive(true);
+        fileRepository.save(file);
+
+        return fileMapper.toDtoView(file);
     }
 
 }

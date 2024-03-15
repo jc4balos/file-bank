@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.storage.service.dto.FileDto;
 import com.example.storage.service.dto.FileDtoView;
@@ -47,6 +49,24 @@ public class FileController {
             return applicationExceptionHandler.handleCustomException(e);
         }
 
+    }
+
+    @PatchMapping("/api/v1/file/delete-file")
+    public ResponseEntity<?> deleteFile(@RequestParam Long fileId, @RequestParam Long userId) {
+        try {
+            return new ResponseEntity<>(fileService.deleteFile(fileId, userId), HttpStatus.OK);
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
+    }
+
+    @PatchMapping("/api/v1/file/restore-file")
+    public ResponseEntity<?> restoreFile(@RequestParam Long fileId, @RequestParam Long userId) {
+        try {
+            return new ResponseEntity<>(fileService.restoreFile(fileId, userId), HttpStatus.OK);
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
     }
 
 }

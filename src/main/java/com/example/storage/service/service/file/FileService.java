@@ -1,5 +1,6 @@
 package com.example.storage.service.service.file;
 
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.stereotype.Service;
@@ -19,11 +20,11 @@ public interface FileService {
     // // View file
     // // contains {fileInfo:FileDto, file:multipartFile}
 
-    // public String deleteFile(Long fileId); // Moves file to trash
+    public Map<String, String> deleteFile(Long fileId, Long userId); // Moves file to trash
 
     // public FileDto updateFile(Long fileId); // Updates file
 
-    // public FileDto restoreFile(Long fileId); // Restores file from trash
+    public FileDtoView restoreFile(Long fileId, Long userId); // Restores file from trash
 
     // public String deleteFileFromTrash(Long fileId); // Deletes file from trash
 
