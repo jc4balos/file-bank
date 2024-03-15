@@ -1,5 +1,8 @@
 package com.example.storage.service.service.file_access;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 
 import com.example.storage.service.model.AccessLevel;
@@ -21,7 +24,7 @@ public class FileAccessServiceImpl implements FileAccessService {
     private final FileRepository fileRepository;
 
     @Override
-    public String addFileAccess(Long fileId, Long accessLevelId) {
+    public Map<String, String> addFileAccess(Long fileId, Long accessLevelId) {
         FileAccess fileAccess = new FileAccess();
 
         FileData file = fileRepository.findById(fileId).get();
@@ -34,7 +37,9 @@ public class FileAccessServiceImpl implements FileAccessService {
         fileAccess.setAllowViewFile(true);
 
         fileAccessRepository.save(fileAccess);
-        return "Access added for file " + file.getFileName() + " with access level "
-                + accessLevel.getAccessLevelName();
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Access added for file " + file.getFileName() + " with access level "
+                + accessLevel.getAccessLevelName());
+        return response;
     }
 }
