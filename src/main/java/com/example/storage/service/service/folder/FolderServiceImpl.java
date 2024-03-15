@@ -13,6 +13,7 @@ import com.example.storage.service.dto.FolderDto;
 import com.example.storage.service.dto.FolderDtoView;
 import com.example.storage.service.mapper.FileMapper;
 import com.example.storage.service.mapper.FolderMapper;
+import com.example.storage.service.mapper.MessageMapper;
 import com.example.storage.service.model.AccessLevel;
 import com.example.storage.service.model.FileAccess;
 import com.example.storage.service.model.Folder;
@@ -31,99 +32,131 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FolderServiceImpl implements FolderService {
 
-    private final FolderRepository folderRepository;
-    private final UserRepository userRepository;
-    private final AccessLevelRepository accessLevelRepository;
+        private final FolderRepository folderRepository;
+        private final UserRepository userRepository;
+        private final AccessLevelRepository accessLevelRepository;
 
-    private final FolderAccessRepository folderAccessRepository;
-    private final FileAccessRepository fileAccessRepository;
+        private final FolderAccessRepository folderAccessRepository;
+        private final FileAccessRepository fileAccessRepository;
 
-    @Autowired
-    private FolderMapper folderMapper;
+        @Autowired
+        private FolderMapper folderMapper;
 
-    @Autowired
-    private FileMapper fileMapper;
+        @Autowired
+        private FileMapper fileMapper;
 
-    @Autowired
-    private FolderAccessServiceImpl folderAccessServiceImpl;
+        @Autowired
+        private MessageMapper messageMapper;
 
-    @Override
-    public FolderDto createFolder(FolderDto folderDto, Long userId) {
-        User owner = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User does not exist"));
-        Folder folder = new Folder();
+        @Autowired
+        private FolderAccessServiceImpl folderAccessServiceImpl;
 
-        List<Long> accessLevelIds = accessLevelRepository.findAll().stream().map(AccessLevel::getAccessLevelId)
-                .collect(Collectors.toList());
+        @Override
+        public FolderDto createFolder(FolderDto folderDto, Long userId) {
+                User owner = userRepository.findById(userId)
+                                .orElseThrow(() -> new IllegalArgumentException("User does not exist"));
+                Folder folder = new Folder();
 
-        folder.setFolderName(folderDto.getFolderName());
-        folder.setFolderDescription(folderDto.getFolderDescription());
-        folder.setOwner(owner);
-        folder.setActive(true);
-        if (folderDto.getFolderParentId() != null) {
-            folder.setFolderParentId(folderDto.getFolderParentId());
-        } else {
-            folder.setFolderParentId(0L);
+                List<Long> accessLevelIds = accessLevelRepository.findAll().stream().map(AccessLevel::getAccessLevelId)
+                                .collect(Collectors.toList());
+
+                folder.setFolderName(folderDto.getFolderName());
+                folder.setFolderDescription(folderDto.getFolderDescription());
+                folder.setOwner(owner);
+                folder.setActive(true);
+                if (folderDto.getFolderParentId() != null) {
+                        folder.setFolderParentId(folderDto.getFolderParentId());
+                } else {
+                        folder.setFolderParentId(0L);
+                }
+
+                folderRepository.save(folder);
+
+                Long folderId = folder.getFolderId();
+
+                for (Long accessLevelIdItem : accessLevelIds) {
+                        folderAccessServiceImpl.addFolderAccess(folderId, accessLevelIdItem);
+                }
+
+                return folderDto;
         }
 
-        folderRepository.save(folder);
+        // Access all files in the parentFolderId where view is enabled for current user
+        @Override
+        public Map<String, Object> getAllFiles(Long folderId, Long userId) {
+                Map<String, Object> response = new HashMap<>();
 
-        Long folderId = folder.getFolderId();
+                Long userAccessLevelId = userRepository.findById(userId)
+                                .orElseThrow(() -> new IllegalArgumentException("User does not exist"))
+                                .getAccessLevelId();
 
-        for (Long accessLevelIdItem : accessLevelIds) {
-            folderAccessServiceImpl.addFolderAccess(folderId, accessLevelIdItem);
+                List<FolderAccess> folders = folderAccessRepository.findFoldersByFolderParentIdAndAccessLevel(
+                                userAccessLevelId,
+                                folderId);
+
+                List<FolderDtoView> mappedFolders = folderMapper.toFolderDtoWithPerms(folders);
+
+                List<FileAccess> files = fileAccessRepository.findFilesByFolderParentIdAndAccessLevel(userAccessLevelId,
+                                folderId);
+
+                List<FileDtoView> mappedFiles = fileMapper.toDtoViewWithPerms(files);
+
+                response.put("folders", mappedFolders);
+                response.put("files", mappedFiles);
+                return response;
         }
 
-        return folderDto;
-    }
+        @Override
+        public Map<String, Object> searchFilesAndFolders(Long folderId, Long userId, String search) {
+                Map<String, Object> response = new HashMap<>();
 
-    // Access all files in the parentFolderId where view is enabled for current user
-    @Override
-    public Map<String, Object> getAllFiles(Long folderId, Long userId) {
-        Map<String, Object> response = new HashMap<>();
+                String fileToSearch = search;
+                String folderToSearch = search;
 
-        Long userAccessLevelId = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User does not exist")).getAccessLevelId();
+                Long userAccessLevelId = userRepository.findById(userId)
+                                .orElseThrow(() -> new IllegalArgumentException("User does not exist"))
+                                .getAccessLevelId();
 
-        List<FolderAccess> folders = folderAccessRepository.findFoldersByFolderParentIdAndAccessLevel(
-                userAccessLevelId,
-                folderId);
+                List<FolderAccess> folders = folderAccessRepository.searchFoldersByFolderParentIdAndAccessLevel(
+                                userAccessLevelId,
+                                folderId, folderToSearch);
 
-        List<FolderDtoView> mappedFolders = folderMapper.toFolderDtoWithPerms(folders);
+                List<FolderDtoView> mappedFolders = folderMapper.toFolderDtoWithPerms(folders);
 
-        List<FileAccess> files = fileAccessRepository.findFilesByFolderParentIdAndAccessLevel(userAccessLevelId,
-                folderId);
+                List<FileAccess> files = fileAccessRepository.searchFilesByFolderParentIdAndAccessLevel(
+                                userAccessLevelId,
+                                folderId, fileToSearch);
 
-        List<FileDtoView> mappedFiles = fileMapper.toDtoViewWithPerms(files);
+                List<FileDtoView> mappedFiles = fileMapper.toDtoViewWithPerms(files);
 
-        response.put("folders", mappedFolders);
-        response.put("files", mappedFiles);
-        return response;
-    }
+                response.put("folders", mappedFolders);
+                response.put("files", mappedFiles);
+                return response;
+        }
 
-    @Override
-    public Map<String, Object> searchFilesAndFolders(Long folderId, Long userId, String search) {
-        Map<String, Object> response = new HashMap<>();
+        @Override
+        public FolderDtoView modifyFolder(Long folderId, Long userId, FolderDto folderDto) {
+                Folder folder = folderRepository.findById(folderId)
+                                .orElseThrow(() -> new IllegalArgumentException("Folder does not exist"));
 
-        String fileToSearch = search;
-        String folderToSearch = search;
+                folder.setFolderName(folderDto.getFolderName());
+                folder.setFolderDescription(folderDto.getFolderDescription());
 
-        Long userAccessLevelId = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User does not exist")).getAccessLevelId();
+                folderRepository.save(folder);
 
-        List<FolderAccess> folders = folderAccessRepository.searchFoldersByFolderParentIdAndAccessLevel(
-                userAccessLevelId,
-                folderId, folderToSearch);
+                return folderMapper.toFolderDtoView(folder);
+        }
 
-        List<FolderDtoView> mappedFolders = folderMapper.toFolderDtoWithPerms(folders);
+        @Override
+        public Map<String, String> deleteFolder(Long folderId, Long userId) {
+                Folder folder = folderRepository.findById(folderId)
+                                .orElseThrow(() -> new IllegalArgumentException("Folder does not exist"));
 
-        List<FileAccess> files = fileAccessRepository.searchFilesByFolderParentIdAndAccessLevel(userAccessLevelId,
-                folderId, fileToSearch);
+                folder.setActive(false);
 
-        List<FileDtoView> mappedFiles = fileMapper.toDtoViewWithPerms(files);
+                folderRepository.save(folder);
 
-        response.put("folders", mappedFolders);
-        response.put("files", mappedFiles);
-        return response;
-    }
+                return messageMapper.mapMessage("Folder deleted successfully");
+
+        }
 }

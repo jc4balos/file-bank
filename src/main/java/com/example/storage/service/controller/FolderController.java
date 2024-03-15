@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,6 +62,24 @@ public class FolderController {
             @RequestParam Long userId, @RequestParam String search) {
 
         return new ResponseEntity<>(folderService.searchFilesAndFolders(folderId, userId, search),
+                HttpStatus.OK);
+
+    }
+
+    @PatchMapping("/api/v1/folder/modify-folder")
+    public ResponseEntity<?> modifyFolder(@RequestParam Long folderId,
+            @RequestParam Long userId, @Valid @RequestBody FolderDto folderDto) {
+
+        return new ResponseEntity<>(folderService.modifyFolder(folderId, userId, folderDto),
+                HttpStatus.OK);
+
+    }
+
+    @PatchMapping("/api/v1/folder/delete-folder")
+    public ResponseEntity<?> deleteFolder(@RequestParam Long folderId,
+            @RequestParam Long userId) {
+
+        return new ResponseEntity<>(folderService.deleteFolder(folderId, userId),
                 HttpStatus.OK);
 
     }

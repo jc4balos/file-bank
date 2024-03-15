@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.example.storage.service.dto.FolderDto;
+import com.example.storage.service.dto.FolderDtoView;
 
 @Service
 public interface FolderService {
@@ -16,12 +17,10 @@ public interface FolderService {
     public Map<String, Object> searchFilesAndFolders(Long folderId, Long userId, String search);
     // is enabled
 
-    // public String deleteFolder(Long folderId, Long userId, HttpServletRequest
-    // request);
+    public Map<String, String> deleteFolder(Long folderId, Long userId);
     // // contains {folders:List<FolderDto>, files:List<FileDto>}
 
-    // public FolderDto modifyFolder(Long folderId, String folderName, String
-    // description);
+    public FolderDtoView modifyFolder(Long folderId, Long userId, FolderDto folderDto);
 
     // public FolderDto restoreFolder(Long folderId, Long userId, HttpServletRequest
     // request);
