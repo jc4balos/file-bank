@@ -53,13 +53,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto modifyUser(Long userId, UserDto userDto) {
         User user = userRepository.findById(userId).get();
-        user.setFirstName(userDto.getFirstName());
-        user.setMiddleName(userDto.getMiddleName());
-        user.setLastName(userDto.getLastName());
-        user.setUserName(userDto.getUserName());
-        user.setPassword(userDto.getPassword());
-        user.setAccessLevelId(userDto.getAccessLevelId());
-        user.setActive(userDto.getActive());
+        userMapper.toUser(userDto);
+
         userRepository.save(user);
         return userDto;
     }

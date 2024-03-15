@@ -21,6 +21,7 @@ public class UserMapper {
         userDto.setPassword(user.getPassword());
         userDto.setAccessLevelId(user.getAccessLevelId());
         userDto.setActive(user.getActive());
+        userDto.setTitle(user.getTitle());
         return userDto;
     }
 
@@ -33,6 +34,7 @@ public class UserMapper {
         user.setPassword(userDto.getPassword());
         user.setAccessLevelId(userDto.getAccessLevelId());
         user.setActive(userDto.getActive());
+        user.setTitle(userDto.getTitle());
         return user;
     }
 }

@@ -46,4 +46,7 @@ public class User {
     @Column(nullable = false, name = "active")
     private Boolean active;
 
+    @Column(nullable = false, length = 100, name = "title")
+    private String title;
+
 }

@@ -33,7 +33,7 @@ public class LoadDatabase {
             Long adminUserId = 1L;
             if (!userRepository.existsById(adminUserId)) {
                 User adminUser = new User(adminUserId, "admin", "", "user", "admin", "administrator",
-                        adminAccessLevelId, true);
+                        adminAccessLevelId, true, "Admin");
                 userRepository.save(adminUser);
             }
 

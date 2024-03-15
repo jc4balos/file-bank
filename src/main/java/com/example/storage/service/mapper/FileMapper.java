@@ -33,7 +33,6 @@ public class FileMapper {
             file.setFileName(fileDto.getFileName());
             file.setDescription(fileDto.getDescription());
             file.setFolder(folder);
-            // get the multipartfile name and add id as salt at the service
 
             file.setOwner(owner);
 

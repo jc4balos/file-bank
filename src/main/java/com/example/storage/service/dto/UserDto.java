@@ -41,4 +41,10 @@ public class UserDto {
 
     @NotNull
     private Boolean active;
+
+    @NotEmpty(message = "Title is required")
+    @NotNull(message = "Title is required")
+    @Size(min = 2, message = "Title should have at least 2 characters")
+    @Size(max = 100, message = "Title should have at most 100 characters")
+    private String title;
 }
