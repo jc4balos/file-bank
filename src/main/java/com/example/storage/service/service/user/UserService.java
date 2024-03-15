@@ -17,12 +17,12 @@ public interface UserService {
 
     public UserDto modifyUser(Long userId, UserDto userDto);
 
-    public String deactivateUser(Long userId);
+    public Map<String, String> deactivateUser(Long userId);
 
-    public String activateUser(Long userId);
+    public Map<String, String> activateUser(Long userId);
 
     public Map<String, Object> loginUser(LoginDto loginDto);
 
-    public String changePassword(PasswordDto passwordDto);
+    public Map<String, String> changePassword(PasswordDto passwordDto);
 
 }

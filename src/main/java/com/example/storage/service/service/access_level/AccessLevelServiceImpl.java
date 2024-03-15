@@ -1,12 +1,14 @@
 package com.example.storage.service.service.access_level;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.example.storage.service.dto.AccessLevelDtoView;
 import com.example.storage.service.dto.CreateAccessLevelDto;
+import com.example.storage.service.exception.MessageMapper;
 import com.example.storage.service.mapper.AccessLevelMapper;
 import com.example.storage.service.model.AccessLevel;
 import com.example.storage.service.repository.AccessLevelRepository;
@@ -19,9 +21,10 @@ public class AccessLevelServiceImpl implements AccessLevelService {
 
     private final AccessLevelRepository accessLevelRepository;
     private final AccessLevelMapper accessLevelMapper;
+    private final MessageMapper messageMapper;
 
     @Override
-    public String addAccessLevel(CreateAccessLevelDto createAccessLevelDto) {
+    public Map<String, String> addAccessLevel(CreateAccessLevelDto createAccessLevelDto) {
 
         String accessLevelName = createAccessLevelDto.getAccessLevelName();
         AccessLevel accessLevel = new AccessLevel();
@@ -30,9 +33,9 @@ public class AccessLevelServiceImpl implements AccessLevelService {
             accessLevel.setAccessLevelName(accessLevelName);
             accessLevel.setActive(true);
             accessLevelRepository.save(accessLevel);
-            return "Access level " + accessLevelName + " added";
+            return messageMapper.mapMessage("Access level " + accessLevel.getAccessLevelName() + " added");
         } else {
-            return "Access level name cannot be empty";
+            return messageMapper.mapMessage("Access level name cannot be empty");
         }
 
     }
@@ -52,26 +55,26 @@ public class AccessLevelServiceImpl implements AccessLevelService {
     }
 
     @Override
-    public String deactivateAccessLevel(Long userId, Long accessLevelId) {
+    public Map<String, String> deactivateAccessLevel(Long userId, Long accessLevelId) {
         AccessLevel accessLevel = accessLevelRepository.findById(accessLevelId).orElse(null);
         if (accessLevel != null) {
             accessLevel.setActive(false);
             accessLevelRepository.save(accessLevel);
-            return "Access level " + accessLevel.getAccessLevelName() + " deactivated";
+            return messageMapper.mapMessage("Access level " + accessLevel.getAccessLevelName() + " deactivated");
         } else {
-            return "Access level not found";
+            return messageMapper.mapMessage("Access level not found");
         }
     }
 
     @Override
-    public String restoreAccessLevel(Long userId, Long accessLevelId) {
+    public Map<String, String> restoreAccessLevel(Long userId, Long accessLevelId) {
         AccessLevel accessLevel = accessLevelRepository.findById(accessLevelId).orElse(null);
         if (accessLevel != null) {
             accessLevel.setActive(true);
             accessLevelRepository.save(accessLevel);
-            return "Access level " + accessLevel.getAccessLevelName() + " restored";
+            return messageMapper.mapMessage("Access level " + accessLevel.getAccessLevelName() + " restored");
         } else {
-            return "Access level not found";
+            return messageMapper.mapMessage("Access level not found");
         }
     }
 

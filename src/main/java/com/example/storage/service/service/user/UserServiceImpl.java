@@ -13,6 +13,7 @@ import com.example.storage.service.dto.LoginDto;
 import com.example.storage.service.dto.PasswordDto;
 import com.example.storage.service.dto.UserDto;
 import com.example.storage.service.exception.CredentialsInvalidException;
+import com.example.storage.service.exception.MessageMapper;
 import com.example.storage.service.exception.UserNameAlreadyExistsException;
 import com.example.storage.service.mapper.UserMapper;
 import com.example.storage.service.model.User;
@@ -26,6 +27,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+
+    private final MessageMapper messageMapper;
 
     @Override
     public UserDto createUser(UserDto userDto) {
@@ -62,22 +65,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String deactivateUser(Long userId) {
+    public Map<String, String> deactivateUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User does not exist"));
         user.setActive(false);
         String userName = user.getUserName();
         userRepository.save(user);
-        return "User " + userName + " deactivated";
+        return messageMapper.mapMessage("User " + userName + " deactivated");
     }
 
     @Override
-    public String activateUser(Long userId) {
+    public Map<String, String> activateUser(Long userId) {
         User user = userRepository.findById(userId).get();
         user.setActive(true);
         String userName = user.getUserName();
         userRepository.save(user);
-        return "User " + userName + " activated";
+        return messageMapper.mapMessage("User " + userName + " activated");
     }
 
     @Override
@@ -99,13 +102,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String changePassword(PasswordDto passwordDto) {
+    public Map<String, String> changePassword(PasswordDto passwordDto) {
         User user = userRepository.findById(passwordDto.getUserId()).get();
 
         if (user.getPassword().equals(passwordDto.getOldPassword())) {
             user.setPassword(passwordDto.getNewPassword());
             userRepository.save(user);
-            return "Password changed successfully";
+            return messageMapper.mapMessage("Password changed successfully");
         } else {
             throw new CredentialsInvalidException("Invalid old password");
         }

@@ -1,5 +1,8 @@
 package com.example.storage.service.service.folder_access;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 
 import com.example.storage.service.model.AccessLevel;
@@ -21,7 +24,7 @@ public class FolderAccessServiceImpl implements FolderAccessService {
     private final FolderRepository folderRepository;
 
     @Override
-    public String addFolderAccess(Long folderId, Long accessLevelId) {
+    public Map<String, String> addFolderAccess(Long folderId, Long accessLevelId) {
         FolderAccess folderAccess = new FolderAccess();
 
         Folder folder = folderRepository.findById(folderId).get();
@@ -36,8 +39,11 @@ public class FolderAccessServiceImpl implements FolderAccessService {
         folderAccess.setAllowAddFile(true);
 
         folderAccessRepository.save(folderAccess);
-        return "Access added for folder " + folder.getFolderName() + " with access level "
-                + accessLevel.getAccessLevelName();
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Access added for folder " + folder.getFolderName() + " with access level "
+                + accessLevel.getAccessLevelName());
+        return response;
+
     }
 
 }
