@@ -67,4 +67,16 @@ public class PermissionsController {
         }
     }
 
+    @PatchMapping("/api/v1/permissions/allow-add-file")
+    public ResponseEntity<?> allowAddFile(@RequestParam Long folderId,
+            @RequestParam Long userId, @RequestParam Long accessLevelId) {
+
+        try {
+            return new ResponseEntity<>(permissionsService.allowAddFile(folderId, userId, accessLevelId),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
+    }
+
 }
