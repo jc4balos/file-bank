@@ -67,4 +67,29 @@ public class FolderMapper {
 
     }
 
+    public FolderDtoView toFolderDtoWithPerms(FolderAccess folderAccess) {
+
+        FolderDtoView folderDtoView = new FolderDtoView();
+        folderDtoView.setFolderId(folderAccess.getFolder().getFolderId());
+        folderDtoView.setFolderName(folderAccess.getFolder().getFolderName());
+        folderDtoView.setFolderDescription(folderAccess.getFolder().getFolderDescription());
+        folderDtoView.setFolderParentId(folderAccess.getFolder().getFolderParentId());
+        folderDtoView.setCreatedDateTime(folderAccess.getFolder().getCreatedDateTime());
+        folderDtoView.setUpdatedDateTime(folderAccess.getFolder().getUpdatedDateTime());
+        folderDtoView.setOwnerId(folderAccess.getFolder().getOwner().getUserId());
+        folderDtoView.setOwnerFullName(
+                folderAccess.getFolder().getOwner().getFirstName() + " "
+                        + folderAccess.getFolder().getOwner().getMiddleName()
+                        + " " + folderAccess.getFolder().getOwner().getLastName());
+        folderDtoView.setOwnerUsername(folderAccess.getFolder().getOwner().getUserName());
+        folderDtoView.setAllowAddFolder(folderAccess.getAllowAddFolder());
+        folderDtoView.setAllowModifyFolder(folderAccess.getAllowModifyFolder());
+        folderDtoView.setAllowDeleteFolder(folderAccess.getAllowDeleteFolder());
+        folderDtoView.setAllowViewFolder(folderAccess.getAllowViewFolder());
+        folderDtoView.setAllowAddFile(folderAccess.getAllowAddFile());
+
+        return folderDtoView;
+
+    }
+
 }
