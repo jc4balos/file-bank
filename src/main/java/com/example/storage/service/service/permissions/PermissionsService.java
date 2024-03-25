@@ -20,4 +20,6 @@ public interface PermissionsService {
 
     public Map<String, Object> allowViewFile(Long fileId, Long userId, Long accessLevelId);
 
+    public Map<String, Object> allowDeleteFile(Long fileId, Long userId, Long accessLevelId);
+
 }

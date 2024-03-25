@@ -103,4 +103,16 @@ public class PermissionsController {
         }
     }
 
+    @PatchMapping("/api/v1/permissions/allow-delete-file")
+    public ResponseEntity<?> allowDeleteFile(@RequestParam Long fileId,
+            @RequestParam Long userId, @RequestParam Long accessLevelId) {
+
+        try {
+            return new ResponseEntity<>(permissionsService.allowDeleteFile(fileId, userId, accessLevelId),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
+    }
+
 }

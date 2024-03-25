@@ -167,4 +167,23 @@ public class PermissionsServiceImpl implements PermissionsService {
         response.put("message", "Modified Successfully");
         return response;
     }
+
+    @Override
+    public Map<String, Object> allowDeleteFile(Long fileId, Long userId, Long accessLevelId) {
+        FileAccess fileAccess = fileAccessRepository.findByFileIdAndAccessLevelId(fileId, accessLevelId)
+                .orElseThrow(
+                        () -> new IllegalArgumentException("File does not exist"));
+
+        if (fileAccess.getAllowDeleteFile() == true) {
+            fileAccess.setAllowDeleteFile(false);
+        } else {
+            fileAccess.setAllowDeleteFile(true);
+        }
+        fileAccessRepository.save(fileAccess);
+        Map<String, Object> response = new HashMap<>();
+        FileDtoView fileDtoView = fileMapper.toDtoViewWithPerms(fileAccess);
+        response.put("folder", fileDtoView);
+        response.put("message", "Modified Successfully");
+        return response;
+    }
 }
