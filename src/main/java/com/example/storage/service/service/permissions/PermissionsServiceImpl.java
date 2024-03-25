@@ -80,4 +80,23 @@ public class PermissionsServiceImpl implements PermissionsService {
         response.put("message", "Modified Successfully");
         return response;
     }
+
+    public Map<String, Object> allowViewFolder(Long folderId, Long userId, Long accessLevelId) {
+
+        FolderAccess folderAccess = folderAccessRepository.findByFolderIdAndAccessLevelId(folderId, accessLevelId)
+                .orElseThrow(
+                        () -> new IllegalArgumentException("Folder does not exist"));
+
+        if (folderAccess.getAllowViewFolder() == true) {
+            folderAccess.setAllowViewFolder(false);
+        } else {
+            folderAccess.setAllowViewFolder(true);
+        }
+        folderAccessRepository.save(folderAccess);
+        Map<String, Object> response = new HashMap<>();
+        FolderDtoView folderDtoView = folderMapper.toFolderDtoWithPerms(folderAccess);
+        response.put("folder", folderDtoView);
+        response.put("message", "Modified Successfully");
+        return response;
+    }
 }

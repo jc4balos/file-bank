@@ -43,4 +43,28 @@ public class PermissionsController {
         }
     }
 
+    @PatchMapping("/api/v1/permissions/allow-delete-folder")
+    public ResponseEntity<?> allowDeleteFolder(@RequestParam Long folderId,
+            @RequestParam Long userId, @RequestParam Long accessLevelId) {
+
+        try {
+            return new ResponseEntity<>(permissionsService.allowDeleteFolder(folderId, userId, accessLevelId),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
+    }
+
+    @PatchMapping("/api/v1/permissions/allow-view-folder")
+    public ResponseEntity<?> allowViewFolder(@RequestParam Long folderId,
+            @RequestParam Long userId, @RequestParam Long accessLevelId) {
+
+        try {
+            return new ResponseEntity<>(permissionsService.allowViewFolder(folderId, userId, accessLevelId),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
+    }
+
 }
