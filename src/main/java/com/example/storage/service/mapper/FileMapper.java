@@ -86,4 +86,26 @@ public class FileMapper {
         return filesListDtoView;
     }
 
+    public FileDtoView toDtoViewWithPerms(FileAccess file) {
+
+        FileDtoView fileDtoView = new FileDtoView();
+        fileDtoView.setFileId(file.getFileData().getFileId());
+        fileDtoView.setFileName(file.getFileData().getFileName());
+        fileDtoView.setDescription(file.getFileData().getDescription());
+        fileDtoView.setFolderId(file.getFileData().getFolder().getFolderId());
+        fileDtoView.setFilePath(file.getFileData().getFilePath());
+        fileDtoView.setFileType(file.getFileData().getFileType());
+        fileDtoView.setCreatedDateTime(file.getFileData().getCreatedDateTime());
+        fileDtoView.setUpdatedDateTime(file.getFileData().getUpdatedDateTime());
+        fileDtoView.setOwnerFullName(file.getFileData().getOwner().getFirstName() + " "
+                + file.getFileData().getOwner().getMiddleName() + " "
+                + file.getFileData().getOwner().getLastName());
+        fileDtoView.setOwnerUserName(file.getFileData().getOwner().getUserName());
+        fileDtoView.setAllowModifyFile(file.getAllowModifyFile());
+        fileDtoView.setAllowDeleteFile(file.getAllowDeleteFile());
+        fileDtoView.setAllowViewFile(file.getAllowViewFile());
+
+        return fileDtoView;
+    }
+
 }

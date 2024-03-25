@@ -79,4 +79,28 @@ public class PermissionsController {
         }
     }
 
+    @PatchMapping("/api/v1/permissions/allow-modify-file")
+    public ResponseEntity<?> allowModifyFile(@RequestParam Long fileId,
+            @RequestParam Long userId, @RequestParam Long accessLevelId) {
+
+        try {
+            return new ResponseEntity<>(permissionsService.allowModifyFile(fileId, userId, accessLevelId),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
+    }
+
+    @PatchMapping("/api/v1/permissions/allow-view-file")
+    public ResponseEntity<?> allowViewFile(@RequestParam Long fileId,
+            @RequestParam Long userId, @RequestParam Long accessLevelId) {
+
+        try {
+            return new ResponseEntity<>(permissionsService.allowViewFile(fileId, userId, accessLevelId),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
+    }
+
 }

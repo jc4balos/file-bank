@@ -16,4 +16,8 @@ public interface PermissionsService {
 
     public Map<String, Object> allowAddFile(Long folderId, Long userId, Long accessLevelId);
 
+    public Map<String, Object> allowModifyFile(Long fileId, Long userId, Long accessLevelId);
+
+    public Map<String, Object> allowViewFile(Long fileId, Long userId, Long accessLevelId);
+
 }
