@@ -8,4 +8,8 @@ import org.springframework.stereotype.Service;
 public interface PermissionsService {
     public Map<String, Object> allowCreateFolder(Long folderId, Long userId, Long accessLevelId);
 
+    public Map<String, Object> allowModifyFolder(Long folderId, Long userId, Long accessLevelId);
+
+    public Map<String, Object> allowDeleteFolder(Long folderId, Long userId, Long accessLevelId);
+
 }

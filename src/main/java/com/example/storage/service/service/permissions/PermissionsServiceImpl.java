@@ -49,10 +49,29 @@ public class PermissionsServiceImpl implements PermissionsService {
                 .orElseThrow(
                         () -> new IllegalArgumentException("Folder does not exist"));
 
-        if (folderAccess.getAllowAddFolder() == true) {
-            folderAccess.setAllowAddFolder(false);
+        if (folderAccess.getAllowModifyFolder() == true) {
+            folderAccess.setAllowModifyFolder(false);
         } else {
-            folderAccess.setAllowAddFolder(true);
+            folderAccess.setAllowModifyFolder(true);
+        }
+        folderAccessRepository.save(folderAccess);
+        Map<String, Object> response = new HashMap<>();
+        FolderDtoView folderDtoView = folderMapper.toFolderDtoWithPerms(folderAccess);
+        response.put("folder", folderDtoView);
+        response.put("message", "Modified Successfully");
+        return response;
+    }
+
+    public Map<String, Object> allowDeleteFolder(Long folderId, Long userId, Long accessLevelId) {
+
+        FolderAccess folderAccess = folderAccessRepository.findByFolderIdAndAccessLevelId(folderId, accessLevelId)
+                .orElseThrow(
+                        () -> new IllegalArgumentException("Folder does not exist"));
+
+        if (folderAccess.getAllowDeleteFolder() == true) {
+            folderAccess.setAllowDeleteFolder(false);
+        } else {
+            folderAccess.setAllowDeleteFolder(true);
         }
         folderAccessRepository.save(folderAccess);
         Map<String, Object> response = new HashMap<>();

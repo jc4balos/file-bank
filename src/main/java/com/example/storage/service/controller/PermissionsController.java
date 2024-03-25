@@ -31,4 +31,16 @@ public class PermissionsController {
         }
     }
 
+    @PatchMapping("/api/v1/permissions/allow-modify-folder")
+    public ResponseEntity<?> allowModifyFolder(@RequestParam Long folderId,
+            @RequestParam Long userId, @RequestParam Long accessLevelId) {
+
+        try {
+            return new ResponseEntity<>(permissionsService.allowModifyFolder(folderId, userId, accessLevelId),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
+    }
+
 }
