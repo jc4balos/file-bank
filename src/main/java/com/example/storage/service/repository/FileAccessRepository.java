@@ -39,4 +39,10 @@ public interface FileAccessRepository extends JpaRepository<FileAccess, Long> {
                                 """)
         Optional<FileAccess> findByFileIdAndAccessLevelId(@Param("fileId") Long fileId,
                         @Param("accessLevelId") Long accessLevelId);
+
+        @Query(nativeQuery = true, value = """
+                        SELECT * FROM file_access WHERE
+                         file_id = :fileId
+                        """)
+        Optional<List<FileAccess>> findByFileId(@Param("fileId") Long fileId);
 }
