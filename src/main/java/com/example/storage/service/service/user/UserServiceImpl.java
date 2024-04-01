@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -79,11 +82,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<String, Object> loginUser(LoginDto loginDto) {
+    public Map<String, Object> loginUser(LoginDto loginDto, HttpServletRequest request) {
         User user = userRepository.findByUserName(loginDto.getUserName());
 
         if (user != null) {
             if (Objects.equals(user.getPassword(), loginDto.getPassword())) {
+
+                HttpSession session = request.getSession();
+                session.setAttribute("userId", user.getUserId());
+
                 Map<String, Object> result = new HashMap<>();
                 String message = "Login successful";
                 result.put("message", message);

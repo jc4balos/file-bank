@@ -3,6 +3,8 @@ package com.example.storage.service.service.user;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Service;
 
 import com.example.storage.service.dto.LoginDto;
@@ -21,7 +23,7 @@ public interface UserService {
 
     public Map<String, String> activateUser(Long userId);
 
-    public Map<String, Object> loginUser(LoginDto loginDto);
+    public Map<String, Object> loginUser(LoginDto loginDto, HttpServletRequest request);
 
     public Map<String, String> changePassword(PasswordDto passwordDto);
 
