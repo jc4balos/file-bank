@@ -1,12 +1,15 @@
 package com.example.storage.service.service.user;
 
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -82,7 +85,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<String, Object> loginUser(LoginDto loginDto, HttpServletRequest request) {
+    public Map<String, Object> loginUser(LoginDto loginDto, HttpServletRequest request, HttpServletResponse response) {
         User user = userRepository.findByUserName(loginDto.getUserName());
 
         if (user != null) {
@@ -90,10 +93,24 @@ public class UserServiceImpl implements UserService {
 
                 HttpSession session = request.getSession();
                 session.setAttribute("userId", user.getUserId());
+                session.setAttribute("userAccessLevel", user.getAccessLevelId());
+                session.setAttribute("userFullName",
+                        user.getFirstName() + " " + user.getMiddleName() + " " + user.getLastName());
+                session.setAttribute("userTitle", user.getTitle());
+
+                // Create a new cookie with the session ID and add it to the response
+                Cookie sessionCookie = new Cookie("sessionId", session.getId());
+                sessionCookie.setHttpOnly(true);
+                response.addCookie(sessionCookie);
 
                 Map<String, Object> result = new HashMap<>();
                 String message = "Login successful";
                 result.put("message", message);
+                Enumeration<String> attributeNames = session.getAttributeNames();
+                while (attributeNames.hasMoreElements()) {
+                    String attributeName = attributeNames.nextElement();
+                    result.put(attributeName, session.getAttribute(attributeName));
+                }
                 return result;
             } else {
                 throw new CredentialsInvalidException("Invalid password");

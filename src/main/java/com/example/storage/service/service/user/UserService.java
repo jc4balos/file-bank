@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ public interface UserService {
 
     public Map<String, String> activateUser(Long userId);
 
-    public Map<String, Object> loginUser(LoginDto loginDto, HttpServletRequest request);
+    public Map<String, Object> loginUser(LoginDto loginDto, HttpServletRequest request, HttpServletResponse response);
 
     public Map<String, String> changePassword(PasswordDto passwordDto);
 

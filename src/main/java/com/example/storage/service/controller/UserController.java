@@ -1,6 +1,7 @@
 package com.example.storage.service.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,11 +68,12 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/user/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginDto loginDto, HttpServletRequest request) {
+    public ResponseEntity<?> loginUser(@RequestBody LoginDto loginDto, HttpServletRequest request,
+            HttpServletResponse response) {
 
         try {
 
-            return new ResponseEntity<>(userService.loginUser(loginDto, request), HttpStatus.OK);
+            return new ResponseEntity<>(userService.loginUser(loginDto, request, response), HttpStatus.OK);
         } catch (CredentialsInvalidException e) {
             return applicationExceptionHandler.handleCustomException(e);
         }
