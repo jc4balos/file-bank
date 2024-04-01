@@ -65,7 +65,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/api/v1/user/login")
+    @PostMapping("/api/v1/user/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginDto loginDto) {
 
         try {
