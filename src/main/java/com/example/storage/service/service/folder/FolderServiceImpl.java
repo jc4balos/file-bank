@@ -90,9 +90,8 @@ public class FolderServiceImpl implements FolderService {
                                 .orElseThrow(() -> new IllegalArgumentException("User does not exist"))
                                 .getAccessLevelId();
 
-                List<FolderAccess> folders = folderAccessRepository.findFoldersByFolderParentIdAndAccessLevel(
-                                userAccessLevelId,
-                                folderId);
+                List<FolderAccess> folders = folderAccessRepository.findFoldersByFolderParentIdAndAccessLevel(folderId,
+                                userAccessLevelId);
 
                 List<FolderDtoView> mappedFolders = folderMapper.toFolderDtoWithPerms(folders);
 
