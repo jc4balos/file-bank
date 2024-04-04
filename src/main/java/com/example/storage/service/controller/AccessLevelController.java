@@ -48,8 +48,14 @@ public class AccessLevelController {
     }
 
     @GetMapping("/api/v1/access-level/get-deactivated-access-levels")
-    public ResponseEntity<?> getDeactivatedAccessLevels() {
-        return new ResponseEntity<>(accessLevelService.getDeactivatedAccessLevels(), HttpStatus.OK);
+    public ResponseEntity<?> getDeactivatedAccessLevels(HttpServletRequest request) {
+        try {
+
+            return new ResponseEntity<>(accessLevelService.getDeactivatedAccessLevels(request), HttpStatus.OK);
+
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
     }
 
     @PatchMapping("/api/v1/access-level/delete-access-level")

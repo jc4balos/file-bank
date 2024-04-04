@@ -73,10 +73,22 @@ public class AccessLevelServiceImpl implements AccessLevelService {
     }
 
     @Override
-    public List<AccessLevelDtoView> getDeactivatedAccessLevels() {
-        return accessLevelRepository.findByDeactivatedAccessLevel().stream()
-                .map(accessLevelMapper::toAccessLevelDtoView)
-                .collect(Collectors.toList());
+    public List<AccessLevelDtoView> getDeactivatedAccessLevels(HttpServletRequest request) {
+        try {
+
+            HttpSession session = request.getSession();
+            if (session.getAttribute("userId") == null) {
+                throw new SessionNotFoundException("Session not found. Please log in.");
+            }
+
+            return accessLevelRepository.findByDeactivatedAccessLevel().stream()
+                    .map(accessLevelMapper::toAccessLevelDtoView)
+                    .collect(Collectors.toList());
+
+        } catch (Exception e) {
+            throw e;
+        }
+
     }
 
     @Override
