@@ -24,7 +24,4 @@ public class FileDto {
     @NotNull(message = "Folder id is required")
     private Long folderId;
 
-    @NotNull(message = "Owner id is required")
-    private Long ownerId;
-
 }

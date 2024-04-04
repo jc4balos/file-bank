@@ -1,5 +1,7 @@
 package com.example.storage.service.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,18 +23,20 @@ public class AdminController {
     private ApplicationExceptionHandler applicationExceptionHandler;
 
     @DeleteMapping("/api/v1/admin/delete-multiple-trash-files")
-    public ResponseEntity<?> deleteMultipleTrashFiles(@RequestParam Long[] folderIds, @RequestParam Long[] fileIds) {
+    public ResponseEntity<?> deleteMultipleTrashFiles(HttpServletRequest request, @RequestParam Long[] folderIds,
+            @RequestParam Long[] fileIds) {
         try {
-            return new ResponseEntity<>(adminService.deleteMultipleTrashFiles(folderIds, fileIds), HttpStatus.OK);
+            return new ResponseEntity<>(adminService.deleteMultipleTrashFiles(request, folderIds, fileIds),
+                    HttpStatus.OK);
         } catch (Exception e) {
             return applicationExceptionHandler.handleCustomException(e);
         }
     }
 
     @GetMapping("/api/v1/admin/get-all-trash-files")
-    public ResponseEntity<?> getAllTrashFiles() {
+    public ResponseEntity<?> getAllTrashFiles(HttpServletRequest request) {
         try {
-            return new ResponseEntity<>(adminService.getAllTrashFiles(), HttpStatus.OK);
+            return new ResponseEntity<>(adminService.getAllTrashFiles(request), HttpStatus.OK);
         } catch (Exception e) {
             return applicationExceptionHandler.handleCustomException(e);
         }

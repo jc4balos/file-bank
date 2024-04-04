@@ -24,8 +24,8 @@ public class FileMapper {
     private final UserRepository userRepository;
     private final FolderRepository folderRepository;
 
-    public FileData toFile(FileDto fileDto) {
-        User owner = userRepository.findById(fileDto.getOwnerId()).get();
+    public FileData toFile(FileDto fileDto, Long ownerId) {
+        User owner = userRepository.findById(ownerId).get();
         Folder folder = folderRepository.findById(fileDto.getFolderId()).get();
 
         if (owner != null) {

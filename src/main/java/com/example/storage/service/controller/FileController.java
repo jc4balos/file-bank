@@ -1,8 +1,8 @@
 package com.example.storage.service.controller;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +30,12 @@ public class FileController {
     private ApplicationExceptionHandler applicationExceptionHandler;
 
     @PostMapping("/api/v1/file/create-file")
-    public ResponseEntity<?> uploadToFileSystem(@Valid @ModelAttribute FileDto fileDto,
+    public ResponseEntity<?> uploadToFileSystem(HttpServletRequest request, @Valid @ModelAttribute FileDto fileDto,
             BindingResult bindingResult) {
 
         try {
             if (!bindingResult.hasErrors()) {
-                CompletableFuture<FileDtoView> response = fileService.createFile(fileDto);
+                CompletableFuture<FileDtoView> response = fileService.createFile(request, fileDto);
                 if (response.isDone()) {
                     return new ResponseEntity<>(response.get(), HttpStatus.OK);
                 }
@@ -45,7 +45,7 @@ public class FileController {
             } else {
                 return applicationExceptionHandler.handleBadRequest(bindingResult);
             }
-        } catch (IllegalArgumentException | InterruptedException | ExecutionException e) {
+        } catch (Exception e) {
             return applicationExceptionHandler.handleCustomException(e);
         }
 

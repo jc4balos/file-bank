@@ -8,12 +8,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.storage.service.dto.FileDtoView;
 import com.example.storage.service.dto.FolderDtoView;
+import com.example.storage.service.exception.SessionNotFoundException;
 import com.example.storage.service.mapper.FileMapper;
 import com.example.storage.service.mapper.FolderMapper;
 import com.example.storage.service.model.FileAccess;
@@ -44,64 +48,85 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public Map<String, Object> deleteMultipleTrashFiles(Long[] folderIds, Long[] fileIds) {
+    public Map<String, Object> deleteMultipleTrashFiles(HttpServletRequest request, Long[] folderIds, Long[] fileIds) {
 
-        if (folderIds != null) {
-            for (Long folderId : folderIds) {
-                // delete folder accesses
-                List<FolderAccess> folderAccesses = folderAccessRepository.findByFolderId(folderId)
-                        .orElseThrow(() -> new IllegalArgumentException("Folder does not exist"));
+        try {
+            HttpSession session = request.getSession();
+            if (session.getAttribute("userId") != null) {
+                if (folderIds != null) {
+                    for (Long folderId : folderIds) {
+                        // delete folder accesses
+                        List<FolderAccess> folderAccesses = folderAccessRepository.findByFolderId(folderId)
+                                .orElseThrow(() -> new IllegalArgumentException("Folder does not exist"));
 
-                folderAccessRepository.deleteAll(folderAccesses);
+                        folderAccessRepository.deleteAll(folderAccesses);
 
-                // delete folder
-                Folder folder = folderRepository.findById(folderId)
-                        .orElseThrow(() -> new IllegalArgumentException("Folder does not exist"));
+                        // delete folder
+                        Folder folder = folderRepository.findById(folderId)
+                                .orElseThrow(() -> new IllegalArgumentException("Folder does not exist"));
 
-                folderRepository.delete(folder);
-            }
-        }
-
-        if (fileIds != null) {
-            for (Long fileId : fileIds) {
-                // delete file
-                List<FileAccess> fileAccesses = fileAccessRepository.findByFileId(fileId)
-                        .orElseThrow(() -> new IllegalArgumentException("File does not exist"));
-                fileAccessRepository.deleteAll(fileAccesses);
-
-                FileData file = fileRepository.findById(fileId)
-                        .orElseThrow(() -> new IllegalArgumentException("File does not exist"));
-
-                String filePath = file.getFilePath();
-
-                try {
-                    Files.delete(Paths.get(filePath));
-                    fileRepository.delete(file);
-                } catch (IOException e) {
-                    throw new RuntimeException("Failed to delete file");
+                        folderRepository.delete(folder);
+                    }
                 }
-            }
-        }
 
-        // Return a response
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Folders and files deleted successfully");
-        return response;
+                if (fileIds != null) {
+                    for (Long fileId : fileIds) {
+                        // delete file
+                        List<FileAccess> fileAccesses = fileAccessRepository.findByFileId(fileId)
+                                .orElseThrow(() -> new IllegalArgumentException("File does not exist"));
+                        fileAccessRepository.deleteAll(fileAccesses);
+
+                        FileData file = fileRepository.findById(fileId)
+                                .orElseThrow(() -> new IllegalArgumentException("File does not exist"));
+
+                        String filePath = file.getFilePath();
+
+                        try {
+                            Files.delete(Paths.get(filePath));
+                            fileRepository.delete(file);
+                        } catch (IOException e) {
+                            throw new RuntimeException("Failed to delete file");
+                        }
+                    }
+                }
+
+                // Return a response
+                Map<String, Object> response = new HashMap<>();
+                response.put("message", "Folders and files deleted successfully");
+                return response;
+            } else {
+                throw new SessionNotFoundException("Session not found. Please log in.");
+            }
+
+        } catch (Exception e) {
+            throw e;
+        }
 
     }
 
     @Override
-    public Map<String, Object> getAllTrashFiles() {
-        List<Folder> folders = folderRepository.findByActiveFalse();
-        List<FileData> files = fileRepository.findByActiveFalse();
+    public Map<String, Object> getAllTrashFiles(HttpServletRequest request) {
 
-        List<FolderDtoView> folderDtoViews = folders.stream().map(folderMapper::toFolderDtoView)
-                .collect(Collectors.toList());
-        List<FileDtoView> fileDtoViews = files.stream().map(fileMapper::toDtoView).collect(Collectors.toList());
+        try {
+            HttpSession session = request.getSession();
+            if (session.getAttribute("userId") != null) {
+                List<Folder> folders = folderRepository.findByActiveFalse();
+                List<FileData> files = fileRepository.findByActiveFalse();
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("folders", folderDtoViews);
-        response.put("files", fileDtoViews);
-        return response;
+                List<FolderDtoView> folderDtoViews = folders.stream().map(folderMapper::toFolderDtoView)
+                        .collect(Collectors.toList());
+                List<FileDtoView> fileDtoViews = files.stream().map(fileMapper::toDtoView).collect(Collectors.toList());
+
+                Map<String, Object> response = new HashMap<>();
+                response.put("folders", folderDtoViews);
+                response.put("files", fileDtoViews);
+                return response;
+            } else {
+                throw new SessionNotFoundException("Session not found. Please log in.");
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+
     }
 }

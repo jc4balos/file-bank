@@ -1,7 +1,11 @@
 package com.example.storage.service.service.file;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
 
@@ -11,7 +15,8 @@ import com.example.storage.service.dto.FileDtoView;
 @Service
 public interface FileService {
 
-    public CompletableFuture<FileDtoView> createFile(FileDto fileDto); // Uploads file
+    public CompletableFuture<FileDtoView> createFile(HttpServletRequest request, FileDto fileDto)
+            throws FileNotFoundException, IOException; // Uploads file
     // Add folder on this function
 
     // public MultipartFile downloadFile(Long fileId); // Downloads file
