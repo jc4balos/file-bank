@@ -1,5 +1,6 @@
 package com.example.storage.service.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,14 +29,15 @@ public class FolderController {
 
     // revise this hide user id dont user request param
     @PostMapping("/api/v1/folder/create-folder")
-    public ResponseEntity<?> createFolder(@RequestParam Long userId, @Valid @RequestBody FolderDto folderDto,
+    public ResponseEntity<?> createFolder(HttpServletRequest request,
+            @Valid @RequestBody FolderDto folderDto,
             BindingResult bindingResult) {
 
         try {
 
             if (!bindingResult.hasErrors()) {
 
-                return new ResponseEntity<>(folderService.createFolder(folderDto, userId), HttpStatus.OK);
+                return new ResponseEntity<>(folderService.createFolder(folderDto, request), HttpStatus.OK);
 
             } else {
 
@@ -50,10 +52,14 @@ public class FolderController {
 
     @GetMapping("/api/v1/folder/get-all-files")
     public ResponseEntity<?> getAllFiles(@RequestParam Long folderId,
-            @RequestParam Long userId) {
+            HttpServletRequest request) {
+        try {
 
-        return new ResponseEntity<>(folderService.getAllFiles(folderId, userId),
-                HttpStatus.OK);
+            return new ResponseEntity<>(folderService.getAllFiles(folderId, request),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
 
     }
 

@@ -5,12 +5,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.storage.service.dto.FileDtoView;
 import com.example.storage.service.dto.FolderDto;
 import com.example.storage.service.dto.FolderDtoView;
+import com.example.storage.service.exception.SessionNotFoundException;
 import com.example.storage.service.mapper.FileMapper;
 import com.example.storage.service.mapper.FolderMapper;
 import com.example.storage.service.mapper.MessageMapper;
@@ -52,57 +56,85 @@ public class FolderServiceImpl implements FolderService {
         private FolderAccessServiceImpl folderAccessServiceImpl;
 
         @Override
-        public FolderDto createFolder(FolderDto folderDto, Long userId) {
-                User owner = userRepository.findById(userId)
-                                .orElseThrow(() -> new IllegalArgumentException("User does not exist"));
-                Folder folder = new Folder();
+        public FolderDto createFolder(FolderDto folderDto, HttpServletRequest request) {
 
-                List<Long> accessLevelIds = accessLevelRepository.findAll().stream().map(AccessLevel::getAccessLevelId)
-                                .collect(Collectors.toList());
+                try {
+                        HttpSession session = request.getSession();
+                        System.out.println(session.getAttribute("userId"));
+                        User owner = userRepository.findById((Long) session.getAttribute("userId"))
+                                        .orElseThrow(() -> new IllegalArgumentException("User does not exist"));
+                        Folder folder = new Folder();
 
-                folder.setFolderName(folderDto.getFolderName());
-                folder.setFolderDescription(folderDto.getFolderDescription());
-                folder.setOwner(owner);
-                folder.setActive(true);
-                if (folderDto.getFolderParentId() != null) {
-                        folder.setFolderParentId(folderDto.getFolderParentId());
-                } else {
-                        folder.setFolderParentId(0L);
+                        List<Long> accessLevelIds = accessLevelRepository.findAll().stream()
+                                        .map(AccessLevel::getAccessLevelId)
+                                        .collect(Collectors.toList());
+
+                        folder.setFolderName(folderDto.getFolderName());
+                        folder.setFolderDescription(folderDto.getFolderDescription());
+                        folder.setOwner(owner);
+                        folder.setActive(true);
+                        if (folderDto.getFolderParentId() != null) {
+                                folder.setFolderParentId(folderDto.getFolderParentId());
+                        } else {
+                                folder.setFolderParentId(0L);
+                        }
+
+                        folderRepository.save(folder);
+
+                        Long folderId = folder.getFolderId();
+
+                        for (Long accessLevelIdItem : accessLevelIds) {
+                                folderAccessServiceImpl.addFolderAccess(folderId, accessLevelIdItem);
+                        }
+
+                        return folderDto;
+
+                } catch (Exception e) {
+                        if (e instanceof RuntimeException) {
+                                throw new SessionNotFoundException("Session not found. Please login.");
+                        } else {
+                                throw e;
+                        }
                 }
 
-                folderRepository.save(folder);
-
-                Long folderId = folder.getFolderId();
-
-                for (Long accessLevelIdItem : accessLevelIds) {
-                        folderAccessServiceImpl.addFolderAccess(folderId, accessLevelIdItem);
-                }
-
-                return folderDto;
         }
 
         // Access all files in the parentFolderId where view is enabled for current user
         @Override
-        public Map<String, Object> getAllFiles(Long folderId, Long userId) {
-                Map<String, Object> response = new HashMap<>();
+        public Map<String, Object> getAllFiles(Long folderId, HttpServletRequest request) {
 
-                Long userAccessLevelId = userRepository.findById(userId)
-                                .orElseThrow(() -> new IllegalArgumentException("User does not exist"))
-                                .getAccessLevelId();
+                try {
+                        Map<String, Object> response = new HashMap<>();
 
-                List<FolderAccess> folders = folderAccessRepository.findFoldersByFolderParentIdAndAccessLevel(folderId,
-                                userAccessLevelId);
+                        HttpSession session = request.getSession();
+                        System.out.println(session.getAttribute("userId"));
+                        Long userAccessLevelId = userRepository.findById((Long) session.getAttribute("userId"))
+                                        .orElseThrow(() -> new IllegalArgumentException("User does not exist"))
+                                        .getAccessLevelId();
 
-                List<FolderDtoView> mappedFolders = folderMapper.toFolderDtoWithPerms(folders);
+                        List<FolderAccess> folders = folderAccessRepository.findFoldersByFolderParentIdAndAccessLevel(
+                                        folderId,
+                                        userAccessLevelId);
 
-                List<FileAccess> files = fileAccessRepository.findFilesByFolderParentIdAndAccessLevel(userAccessLevelId,
-                                folderId);
+                        List<FolderDtoView> mappedFolders = folderMapper.toFolderDtoWithPerms(folders);
 
-                List<FileDtoView> mappedFiles = fileMapper.toDtoViewWithPerms(files);
+                        List<FileAccess> files = fileAccessRepository.findFilesByFolderParentIdAndAccessLevel(
+                                        userAccessLevelId,
+                                        folderId);
 
-                response.put("folders", mappedFolders);
-                response.put("files", mappedFiles);
-                return response;
+                        List<FileDtoView> mappedFiles = fileMapper.toDtoViewWithPerms(files);
+
+                        response.put("folders", mappedFolders);
+                        response.put("files", mappedFiles);
+                        return response;
+                } catch (Exception e) {
+                        if (e instanceof RuntimeException) {
+                                throw new SessionNotFoundException("Session not found. Please login.");
+                        } else {
+                                throw e;
+                        }
+                }
+
         }
 
         @Override
