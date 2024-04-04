@@ -4,10 +4,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Service;
 
 import com.example.storage.service.dto.AccessLevelDtoView;
 import com.example.storage.service.dto.CreateAccessLevelDto;
+import com.example.storage.service.exception.SessionNotFoundException;
 import com.example.storage.service.mapper.AccessLevelMapper;
 import com.example.storage.service.mapper.MessageMapper;
 import com.example.storage.service.model.AccessLevel;
@@ -24,27 +28,48 @@ public class AccessLevelServiceImpl implements AccessLevelService {
     private final MessageMapper messageMapper;
 
     @Override
-    public Map<String, String> addAccessLevel(CreateAccessLevelDto createAccessLevelDto) {
+    public Map<String, String> addAccessLevel(CreateAccessLevelDto createAccessLevelDto, HttpServletRequest request) {
 
-        String accessLevelName = createAccessLevelDto.getAccessLevelName();
-        AccessLevel accessLevel = new AccessLevel();
+        try {
+            HttpSession session = request.getSession();
+            if (session.getAttribute("userId") == null) {
+                throw new SessionNotFoundException("Session not found. Please log in.");
+            }
 
-        if (accessLevelName != null || !accessLevelName.isEmpty()) {
-            accessLevel.setAccessLevelName(accessLevelName);
-            accessLevel.setActive(true);
-            accessLevelRepository.save(accessLevel);
-            return messageMapper.mapMessage("Access level " + accessLevel.getAccessLevelName() + " added");
-        } else {
-            return messageMapper.mapMessage("Access level name cannot be empty");
+            String accessLevelName = createAccessLevelDto.getAccessLevelName();
+            AccessLevel accessLevel = new AccessLevel();
+
+            if (accessLevelName != null || !accessLevelName.isEmpty()) {
+                accessLevel.setAccessLevelName(accessLevelName);
+                accessLevel.setActive(true);
+                accessLevelRepository.save(accessLevel);
+                return messageMapper.mapMessage("Access level " + accessLevel.getAccessLevelName() + " added");
+            } else {
+                return messageMapper.mapMessage("Access level name cannot be empty");
+            }
+
+        } catch (Exception e) {
+            throw e;
         }
 
     }
 
     @Override
-    public List<AccessLevelDtoView> getAllAccessLevels() {
-        return accessLevelRepository.findByActiveAccessLevel().stream()
-                .map(accessLevelMapper::toAccessLevelDtoView)
-                .collect(Collectors.toList());
+    public List<AccessLevelDtoView> getAllAccessLevels(HttpServletRequest request) {
+        try {
+            HttpSession session = request.getSession();
+            if (session.getAttribute("userId") == null) {
+                throw new SessionNotFoundException("Session not found. Please log in.");
+            }
+
+            return accessLevelRepository.findByActiveAccessLevel().stream()
+                    .map(accessLevelMapper::toAccessLevelDtoView)
+                    .collect(Collectors.toList());
+
+        } catch (Exception e) {
+            throw e;
+        }
+
     }
 
     @Override

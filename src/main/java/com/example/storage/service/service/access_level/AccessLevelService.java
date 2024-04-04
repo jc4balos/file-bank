@@ -3,6 +3,8 @@ package com.example.storage.service.service.access_level;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Service;
 
 import com.example.storage.service.dto.AccessLevelDtoView;
@@ -11,14 +13,14 @@ import com.example.storage.service.dto.CreateAccessLevelDto;
 @Service
 public interface AccessLevelService {
 
-    public Map<String, String> addAccessLevel(CreateAccessLevelDto createAccessLevelDto);
+    public Map<String, String> addAccessLevel(CreateAccessLevelDto createAccessLevelDto, HttpServletRequest request);
 
-    public List<AccessLevelDtoView> getAllAccessLevels();
+    public List<AccessLevelDtoView> getAllAccessLevels(HttpServletRequest request);
 
-    public List<AccessLevelDtoView> getDeactivatedAccessLevels();
+    public List<AccessLevelDtoView> getDeactivatedAccessLevels(HttpServletRequest request);
 
-    public Map<String, String> deactivateAccessLevel(Long userId, Long accessLevelId);
+    public Map<String, String> deactivateAccessLevel(HttpServletRequest request, Long accessLevelId);
 
-    public Map<String, String> restoreAccessLevel(Long userId, Long accessLevelId);
+    public Map<String, String> restoreAccessLevel(HttpServletRequest request, Long accessLevelId);
 
 }
