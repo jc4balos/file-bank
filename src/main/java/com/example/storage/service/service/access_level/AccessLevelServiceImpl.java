@@ -32,20 +32,22 @@ public class AccessLevelServiceImpl implements AccessLevelService {
 
         try {
             HttpSession session = request.getSession();
-            if (session.getAttribute("userId") == null) {
-                throw new SessionNotFoundException("Session not found. Please log in.");
-            }
+            if (session.getAttribute("userId") != null) {
+                String accessLevelName = createAccessLevelDto.getAccessLevelName();
+                AccessLevel accessLevel = new AccessLevel();
 
-            String accessLevelName = createAccessLevelDto.getAccessLevelName();
-            AccessLevel accessLevel = new AccessLevel();
-
-            if (accessLevelName != null || !accessLevelName.isEmpty()) {
-                accessLevel.setAccessLevelName(accessLevelName);
-                accessLevel.setActive(true);
-                accessLevelRepository.save(accessLevel);
-                return messageMapper.mapMessage("Access level " + accessLevel.getAccessLevelName() + " added");
+                if (accessLevelName != null || !accessLevelName.isEmpty()) {
+                    accessLevel.setAccessLevelName(accessLevelName);
+                    accessLevel.setActive(true);
+                    accessLevelRepository.save(accessLevel);
+                    return messageMapper.mapMessage("Access level " + accessLevel.getAccessLevelName() + " added");
+                } else {
+                    return messageMapper.mapMessage("Access level name cannot be empty");
+                }
             } else {
-                return messageMapper.mapMessage("Access level name cannot be empty");
+
+                throw new SessionNotFoundException("Session not found. Please log in.");
+
             }
 
         } catch (Exception e) {
@@ -58,13 +60,15 @@ public class AccessLevelServiceImpl implements AccessLevelService {
     public List<AccessLevelDtoView> getAllAccessLevels(HttpServletRequest request) {
         try {
             HttpSession session = request.getSession();
-            if (session.getAttribute("userId") == null) {
-                throw new SessionNotFoundException("Session not found. Please log in.");
-            }
+            if (session.getAttribute("userId") != null) {
+                return accessLevelRepository.findByActiveAccessLevel().stream()
+                        .map(accessLevelMapper::toAccessLevelDtoView)
+                        .collect(Collectors.toList());
 
-            return accessLevelRepository.findByActiveAccessLevel().stream()
-                    .map(accessLevelMapper::toAccessLevelDtoView)
-                    .collect(Collectors.toList());
+            } else {
+                throw new SessionNotFoundException("Session not found. Please log in.");
+
+            }
 
         } catch (Exception e) {
             throw e;
@@ -77,13 +81,15 @@ public class AccessLevelServiceImpl implements AccessLevelService {
         try {
 
             HttpSession session = request.getSession();
-            if (session.getAttribute("userId") == null) {
-                throw new SessionNotFoundException("Session not found. Please log in.");
-            }
+            if (session.getAttribute("userId") != null) {
+                return accessLevelRepository.findByDeactivatedAccessLevel().stream()
+                        .map(accessLevelMapper::toAccessLevelDtoView)
+                        .collect(Collectors.toList());
+            } else {
 
-            return accessLevelRepository.findByDeactivatedAccessLevel().stream()
-                    .map(accessLevelMapper::toAccessLevelDtoView)
-                    .collect(Collectors.toList());
+                throw new SessionNotFoundException("Session not found. Please log in.");
+
+            }
 
         } catch (Exception e) {
             throw e;
@@ -92,27 +98,58 @@ public class AccessLevelServiceImpl implements AccessLevelService {
     }
 
     @Override
-    public Map<String, String> deactivateAccessLevel(Long userId, Long accessLevelId) {
-        AccessLevel accessLevel = accessLevelRepository.findById(accessLevelId).orElse(null);
-        if (accessLevel != null) {
-            accessLevel.setActive(false);
-            accessLevelRepository.save(accessLevel);
-            return messageMapper.mapMessage("Access level " + accessLevel.getAccessLevelName() + " deactivated");
-        } else {
-            return messageMapper.mapMessage("Access level not found");
+    public Map<String, String> deactivateAccessLevel(HttpServletRequest request, Long accessLevelId) {
+        try {
+
+            HttpSession session = request.getSession();
+            if (session.getAttribute("userId") != null) {
+                AccessLevel accessLevel = accessLevelRepository.findById(accessLevelId).orElse(null);
+                if (accessLevel != null) {
+                    accessLevel.setActive(false);
+                    accessLevelRepository.save(accessLevel);
+                    return messageMapper
+                            .mapMessage("Access level " + accessLevel.getAccessLevelName() + " deactivated");
+                } else {
+                    return messageMapper.mapMessage("Access level not found");
+                }
+            } else {
+
+                throw new SessionNotFoundException("Session not found. Please log in.");
+
+            }
+
+        } catch (Exception e) {
+            throw e;
         }
+
     }
 
     @Override
-    public Map<String, String> restoreAccessLevel(Long userId, Long accessLevelId) {
-        AccessLevel accessLevel = accessLevelRepository.findById(accessLevelId).orElse(null);
-        if (accessLevel != null) {
-            accessLevel.setActive(true);
-            accessLevelRepository.save(accessLevel);
-            return messageMapper.mapMessage("Access level " + accessLevel.getAccessLevelName() + " restored");
-        } else {
-            return messageMapper.mapMessage("Access level not found");
+    public Map<String, String> restoreAccessLevel(HttpServletRequest request, Long accessLevelId) {
+
+        try {
+
+            HttpSession session = request.getSession();
+            if (session.getAttribute("userId") != null) {
+                AccessLevel accessLevel = accessLevelRepository.findById(accessLevelId).orElse(null);
+                if (accessLevel != null) {
+                    accessLevel.setActive(true);
+                    accessLevelRepository.save(accessLevel);
+                    return messageMapper.mapMessage("Access level " + accessLevel.getAccessLevelName() + " restored");
+                } else {
+                    return messageMapper.mapMessage("Access level not found");
+                }
+
+            } else {
+
+                throw new SessionNotFoundException("Session not found. Please log in.");
+
+            }
+
+        } catch (Exception e) {
+            throw e;
         }
+
     }
 
 }

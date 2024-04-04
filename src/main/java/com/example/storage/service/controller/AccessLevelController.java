@@ -59,12 +59,18 @@ public class AccessLevelController {
     }
 
     @PatchMapping("/api/v1/access-level/delete-access-level")
-    public ResponseEntity<?> deleteAccessLevel(@RequestParam Long userId, @RequestParam Long accessLevelId) {
-        return new ResponseEntity<>(accessLevelService.deactivateAccessLevel(userId, accessLevelId), HttpStatus.OK);
+    public ResponseEntity<?> deleteAccessLevel(HttpServletRequest request, @RequestParam Long accessLevelId) {
+
+        try {
+            return new ResponseEntity<>(accessLevelService.deactivateAccessLevel(request, accessLevelId),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
     }
 
     @PatchMapping("/api/v1/access-level/restore-access-level")
-    public ResponseEntity<?> restoreAccessLevel(@RequestParam Long userId, @RequestParam Long accessLevelId) {
-        return new ResponseEntity<>(accessLevelService.restoreAccessLevel(userId, accessLevelId), HttpStatus.OK);
+    public ResponseEntity<?> restoreAccessLevel(HttpServletRequest request, @RequestParam Long accessLevelId) {
+        return new ResponseEntity<>(accessLevelService.restoreAccessLevel(request, accessLevelId), HttpStatus.OK);
     }
 }
