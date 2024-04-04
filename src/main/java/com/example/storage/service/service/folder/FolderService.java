@@ -16,13 +16,13 @@ public interface FolderService {
 
     public Map<String, Object> getAllFiles(Long folderId, HttpServletRequest request); // Where folder view
 
-    public Map<String, Object> searchFilesAndFolders(Long folderId, Long userId, String search);
+    public Map<String, Object> searchFilesAndFolders(Long folderId, HttpServletRequest request, String search);
     // is enabled
 
-    public Map<String, String> deleteFolder(Long folderId, Long userId);
+    public Map<String, String> deleteFolder(Long folderId, HttpServletRequest request);
     // // contains {folders:List<FolderDto>, files:List<FileDto>}
 
-    public FolderDtoView modifyFolder(Long folderId, Long userId, FolderDto folderDto);
+    public FolderDtoView modifyFolder(Long folderId, HttpServletRequest request, FolderDto folderDto);
 
     // public FolderDto restoreFolder(Long folderId, Long userId, HttpServletRequest
     // request);

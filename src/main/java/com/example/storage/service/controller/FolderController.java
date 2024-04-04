@@ -65,28 +65,41 @@ public class FolderController {
 
     @GetMapping("/api/v1/folder/get-files-and-folders/search")
     public ResponseEntity<?> searchFilesAndFolders(@RequestParam Long folderId,
-            @RequestParam Long userId, @RequestParam String search) {
-
-        return new ResponseEntity<>(folderService.searchFilesAndFolders(folderId, userId, search),
-                HttpStatus.OK);
+            HttpServletRequest request, @RequestParam String search) {
+        try {
+            return new ResponseEntity<>(folderService.searchFilesAndFolders(folderId, request, search),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
 
     }
 
     @PatchMapping("/api/v1/folder/modify-folder")
     public ResponseEntity<?> modifyFolder(@RequestParam Long folderId,
-            @RequestParam Long userId, @Valid @RequestBody FolderDto folderDto) {
+            HttpServletRequest request, @Valid @RequestBody FolderDto folderDto) {
 
-        return new ResponseEntity<>(folderService.modifyFolder(folderId, userId, folderDto),
-                HttpStatus.OK);
+        try {
+
+            return new ResponseEntity<>(folderService.modifyFolder(folderId, request, folderDto),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
 
     }
 
     @PatchMapping("/api/v1/folder/delete-folder")
     public ResponseEntity<?> deleteFolder(@RequestParam Long folderId,
-            @RequestParam Long userId) {
+            HttpServletRequest request) {
 
-        return new ResponseEntity<>(folderService.deleteFolder(folderId, userId),
-                HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(folderService.deleteFolder(folderId, request),
+                    HttpStatus.OK);
+
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
 
     }
 

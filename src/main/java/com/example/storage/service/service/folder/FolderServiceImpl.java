@@ -138,56 +138,98 @@ public class FolderServiceImpl implements FolderService {
         }
 
         @Override
-        public Map<String, Object> searchFilesAndFolders(Long folderId, Long userId, String search) {
-                Map<String, Object> response = new HashMap<>();
+        public Map<String, Object> searchFilesAndFolders(Long folderId, HttpServletRequest request, String search) {
 
-                String fileToSearch = search;
-                String folderToSearch = search;
+                try {
+                        HttpSession session = request.getSession();
+                        Long userId = (Long) session.getAttribute("userId");
+                        if (userId != null) {
+                                Map<String, Object> response = new HashMap<>();
 
-                Long userAccessLevelId = userRepository.findById(userId)
-                                .orElseThrow(() -> new IllegalArgumentException("User does not exist"))
-                                .getAccessLevelId();
+                                String fileToSearch = search;
+                                String folderToSearch = search;
 
-                List<FolderAccess> folders = folderAccessRepository.searchFoldersByFolderParentIdAndAccessLevel(
-                                userAccessLevelId,
-                                folderId, folderToSearch);
+                                Long userAccessLevelId = userRepository.findById(userId)
+                                                .orElseThrow(() -> new IllegalArgumentException("User does not exist"))
+                                                .getAccessLevelId();
 
-                List<FolderDtoView> mappedFolders = folderMapper.toFolderDtoWithPerms(folders);
+                                List<FolderAccess> folders = folderAccessRepository
+                                                .searchFoldersByFolderParentIdAndAccessLevel(
+                                                                userAccessLevelId,
+                                                                folderId, folderToSearch);
 
-                List<FileAccess> files = fileAccessRepository.searchFilesByFolderParentIdAndAccessLevel(
-                                userAccessLevelId,
-                                folderId, fileToSearch);
+                                List<FolderDtoView> mappedFolders = folderMapper.toFolderDtoWithPerms(folders);
 
-                List<FileDtoView> mappedFiles = fileMapper.toDtoViewWithPerms(files);
+                                List<FileAccess> files = fileAccessRepository.searchFilesByFolderParentIdAndAccessLevel(
+                                                userAccessLevelId,
+                                                folderId, fileToSearch);
 
-                response.put("folders", mappedFolders);
-                response.put("files", mappedFiles);
-                return response;
+                                List<FileDtoView> mappedFiles = fileMapper.toDtoViewWithPerms(files);
+
+                                response.put("folders", mappedFolders);
+                                response.put("files", mappedFiles);
+                                return response;
+                        } else {
+                                throw new SessionNotFoundException("Session not found. Please log in.");
+                        }
+
+                } catch (Exception e) {
+                        throw e;
+                }
+
         }
 
         @Override
-        public FolderDtoView modifyFolder(Long folderId, Long userId, FolderDto folderDto) {
-                Folder folder = folderRepository.findById(folderId)
-                                .orElseThrow(() -> new IllegalArgumentException("Folder does not exist"));
+        public FolderDtoView modifyFolder(Long folderId, HttpServletRequest request, FolderDto folderDto) {
 
-                folder.setFolderName(folderDto.getFolderName());
-                folder.setFolderDescription(folderDto.getFolderDescription());
+                try {
+                        HttpSession session = request.getSession();
+                        Long userId = (Long) session.getAttribute("userId");
+                        if (userId != null) {
+                                Folder folder = folderRepository.findById(folderId)
+                                                .orElseThrow(() -> new IllegalArgumentException(
+                                                                "Folder does not exist"));
 
-                folderRepository.save(folder);
+                                folder.setFolderName(folderDto.getFolderName());
+                                folder.setFolderDescription(folderDto.getFolderDescription());
 
-                return folderMapper.toFolderDtoView(folder);
+                                folderRepository.save(folder);
+
+                                return folderMapper.toFolderDtoView(folder);
+                        } else {
+                                throw new SessionNotFoundException("Session not found. Please log in.");
+
+                        }
+
+                } catch (Exception e) {
+                        throw e;
+                }
+
         }
 
         @Override
-        public Map<String, String> deleteFolder(Long folderId, Long userId) {
-                Folder folder = folderRepository.findById(folderId)
-                                .orElseThrow(() -> new IllegalArgumentException("Folder does not exist"));
+        public Map<String, String> deleteFolder(Long folderId, HttpServletRequest request) {
+                try {
+                        HttpSession session = request.getSession();
+                        Long userId = (Long) session.getAttribute("userId");
+                        if (userId != null) {
+                                Folder folder = folderRepository.findById(folderId)
+                                                .orElseThrow(() -> new IllegalArgumentException(
+                                                                "Folder does not exist"));
 
-                folder.setActive(false);
+                                folder.setActive(false);
 
-                folderRepository.save(folder);
+                                folderRepository.save(folder);
 
-                return messageMapper.mapMessage("Folder deleted successfully");
+                                return messageMapper.mapMessage("Folder deleted successfully");
 
+                        } else {
+                                throw new SessionNotFoundException("Session not found. Please log in.");
+                        }
+
+                } catch (Exception e) {
+                        throw e;
+
+                }
         }
 }
