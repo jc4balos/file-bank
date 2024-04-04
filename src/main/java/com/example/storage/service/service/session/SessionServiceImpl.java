@@ -17,8 +17,14 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public SessionDto getSessionInfo(HttpServletRequest request) {
-        SessionDto sessionDto = sessionMapper.toDto(request);
-        return sessionDto;
+        try {
+            SessionDto sessionDto = sessionMapper.toDto(request);
+            return sessionDto;
+
+        } catch (Exception e) {
+            throw e;
+        }
+
     }
 
 }
