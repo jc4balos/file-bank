@@ -72,10 +72,6 @@ public class FileServiceImpl implements FileService {
                 String encryptedFileName = fileEncryptor.encryptFileName(originalFileName);
                 String extension = null;
 
-                // if (multipartFile.isEmpty()) {
-                // throw new FileNotFoundException("No File found");
-                // }
-
                 int i = originalFileName.lastIndexOf('.');
                 if (i > 0) {
                     extension = originalFileName.substring(i + 1);
@@ -96,9 +92,9 @@ public class FileServiceImpl implements FileService {
                 try {
                     multipartFile.transferTo(destinationFile);
                 } catch (FileNotFoundException e) {
-                    throw e;
+                    throw new FileNotFoundException("File not found");
                 } catch (IOException e) {
-                    throw e;
+                    throw new IOException("Failed to save file");
                 }
 
                 fileRepository.save(file);
@@ -126,27 +122,51 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Map<String, String> deleteFile(Long fileId, Long userId) {
-        FileData file = fileRepository.findById(fileId)
-                .orElseThrow(() -> new IllegalArgumentException("File not found"));
+    public Map<String, String> deleteFile(Long fileId, HttpServletRequest request) {
+        try {
+            HttpSession session = request.getSession();
+            if (session.getAttribute("userId") != null) {
+                FileData file = fileRepository.findById(fileId)
+                        .orElseThrow(() -> new IllegalArgumentException("File not found"));
 
-        file.setActive(false);
-        fileRepository.save(file);
+                file.setActive(false);
+                fileRepository.save(file);
 
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "File " + file.getFileName() + " moved to trash");
-        return response;
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "File " + file.getFileName() + " moved to trash");
+                return response;
+
+            } else {
+                throw new SessionNotFoundException("Session not found. Please log in.");
+            }
+
+        } catch (Exception e) {
+            throw e;
+        }
+
     }
 
     @Override
-    public FileDtoView restoreFile(Long fileId, Long userId) {
-        FileData file = fileRepository.findById(fileId)
-                .orElseThrow(() -> new IllegalArgumentException("File not found"));
+    public FileDtoView restoreFile(Long fileId, HttpServletRequest request) {
+        try {
+            HttpSession session = request.getSession();
+            if (session.getAttribute("userId") != null) {
+                FileData file = fileRepository.findById(fileId)
+                        .orElseThrow(() -> new IllegalArgumentException("File not found"));
 
-        file.setActive(true);
-        fileRepository.save(file);
+                file.setActive(true);
+                fileRepository.save(file);
 
-        return fileMapper.toDtoView(file);
+                return fileMapper.toDtoView(file);
+
+            } else {
+                throw new SessionNotFoundException("Session not found. Please log in.");
+            }
+
+        } catch (Exception e) {
+            throw e;
+        }
+
     }
 
 }

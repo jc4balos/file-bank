@@ -52,18 +52,18 @@ public class FileController {
     }
 
     @PatchMapping("/api/v1/file/delete-file")
-    public ResponseEntity<?> deleteFile(@RequestParam Long fileId, @RequestParam Long userId) {
+    public ResponseEntity<?> deleteFile(@RequestParam Long fileId, HttpServletRequest request) {
         try {
-            return new ResponseEntity<>(fileService.deleteFile(fileId, userId), HttpStatus.OK);
+            return new ResponseEntity<>(fileService.deleteFile(fileId, request), HttpStatus.OK);
         } catch (Exception e) {
             return applicationExceptionHandler.handleCustomException(e);
         }
     }
 
     @PatchMapping("/api/v1/file/restore-file")
-    public ResponseEntity<?> restoreFile(@RequestParam Long fileId, @RequestParam Long userId) {
+    public ResponseEntity<?> restoreFile(@RequestParam Long fileId, HttpServletRequest request) {
         try {
-            return new ResponseEntity<>(fileService.restoreFile(fileId, userId), HttpStatus.OK);
+            return new ResponseEntity<>(fileService.restoreFile(fileId, request), HttpStatus.OK);
         } catch (Exception e) {
             return applicationExceptionHandler.handleCustomException(e);
         }
