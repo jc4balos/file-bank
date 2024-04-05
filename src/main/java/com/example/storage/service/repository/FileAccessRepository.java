@@ -12,25 +12,27 @@ import com.example.storage.service.model.FileAccess;
 public interface FileAccessRepository extends JpaRepository<FileAccess, Long> {
         @Query(nativeQuery = true, value = """
                         Select * from files as a, file_access as b, access_level as c
-                        WHERE c.access_level_id=:accessLevelId
-                        AND a.folder_id = :folderId
+                        WHERE c.access_level_id= :accessLevelId
+                        AND a.folder_id = :folderParentId
                         AND b.access_level_id = c.access_level_id
                         AND b.file_id = a.file_id
                         AND b.allow_view_file=1
                         """)
-        List<FileAccess> findFilesByFolderParentIdAndAccessLevel(@Param("folderId") Long folderId,
+        List<FileAccess> findFilesByFolderParentIdAndAccessLevel(@Param("folderParentId") Long folderId,
                         @Param("accessLevelId") Long accessLevelId);
+
+        // find the issue here
 
         @Query(nativeQuery = true, value = """
                         Select * from files as a, file_access as b, access_level as c
                         WHERE c.access_level_id=:accessLevelId
-                        AND a.folder_id = :folderId
+                        AND a.folder_id = :folderParentId
                         AND b.access_level_id = c.access_level_id
                         AND b.file_id = a.file_id
                         AND b.allow_view_file=1
                         AND a.file_name LIKE %:search%
                         """)
-        List<FileAccess> searchFilesByFolderParentIdAndAccessLevel(@Param("folderId") Long folderId,
+        List<FileAccess> searchFilesByFolderParentIdAndAccessLevel(@Param("folderParentId") Long folderId,
                         @Param("accessLevelId") Long accessLevelId, @Param("search") String search);
 
         @Query(nativeQuery = true, value = """

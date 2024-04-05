@@ -112,6 +112,9 @@ public class FolderServiceImpl implements FolderService {
                                         .orElseThrow(() -> new IllegalArgumentException("User does not exist"))
                                         .getAccessLevelId();
 
+                        System.out.println("User Access Level Id: " + userAccessLevelId);
+                        System.out.println("Folder Id: " + folderId);
+
                         List<FolderAccess> folders = folderAccessRepository.findFoldersByFolderParentIdAndAccessLevel(
                                         folderId,
                                         userAccessLevelId);
@@ -119,8 +122,8 @@ public class FolderServiceImpl implements FolderService {
                         List<FolderDtoView> mappedFolders = folderMapper.toFolderDtoWithPerms(folders);
 
                         List<FileAccess> files = fileAccessRepository.findFilesByFolderParentIdAndAccessLevel(
-                                        userAccessLevelId,
-                                        folderId);
+
+                                        folderId, userAccessLevelId);
 
                         List<FileDtoView> mappedFiles = fileMapper.toDtoViewWithPerms(files);
 
