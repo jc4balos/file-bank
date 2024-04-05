@@ -20,7 +20,6 @@ import com.example.storage.service.dto.PasswordDto;
 import com.example.storage.service.dto.UserDto;
 import com.example.storage.service.exception.ApplicationExceptionHandler;
 import com.example.storage.service.exception.CredentialsInvalidException;
-import com.example.storage.service.exception.UserNameAlreadyExistsException;
 import com.example.storage.service.service.user.UserService;
 
 @Controller
@@ -34,18 +33,18 @@ public class UserController {
 
     @PostMapping("/api/v1/user/create-user")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDto userDto,
-            BindingResult bindingResult) {
+            BindingResult bindingResult, HttpServletRequest request) {
 
         try {
 
             if (!bindingResult.hasErrors()) {
-                return new ResponseEntity<>(userService.createUser(userDto), HttpStatus.OK);
+                return new ResponseEntity<>(userService.createUser(userDto, request), HttpStatus.OK);
 
             } else {
                 return applicationExceptionHandler.handleBadRequest(bindingResult);
 
             }
-        } catch (UserNameAlreadyExistsException e) {
+        } catch (Exception e) {
             return applicationExceptionHandler.handleCustomException(e);
 
         }
@@ -53,18 +52,32 @@ public class UserController {
     }
 
     @GetMapping("/api/v1/user/all-users")
-    public ResponseEntity<?> getAllUsers() {
-        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+    public ResponseEntity<?> getAllUsers(HttpServletRequest request) {
+        try {
+
+            return new ResponseEntity<>(userService.getAllUsers(request), HttpStatus.OK);
+
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
     }
 
     @PatchMapping("/api/v1/user/modify-user")
-    public ResponseEntity<?> modifyUser(@Valid @RequestBody UserDto userDto, BindingResult bindingResult) {
+    public ResponseEntity<?> modifyUser(@Valid @RequestBody UserDto userDto, BindingResult bindingResult,
+            HttpServletRequest request) {
 
-        if (!bindingResult.hasErrors()) {
-            return new ResponseEntity<>(userService.modifyUser(userDto.getUserId(), userDto), HttpStatus.OK);
-        } else {
-            return applicationExceptionHandler.handleBadRequest(bindingResult);
+        try {
+            if (!bindingResult.hasErrors()) {
+                return new ResponseEntity<>(userService.modifyUser(userDto.getUserId(), userDto, request),
+                        HttpStatus.OK);
+            } else {
+                return applicationExceptionHandler.handleBadRequest(bindingResult);
+            }
+
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
         }
+
     }
 
     @PostMapping("/api/v1/user/login")
@@ -80,27 +93,38 @@ public class UserController {
     }
 
     @PatchMapping("/api/v1/user/change-password")
-    public ResponseEntity<?> changePassword(@RequestBody PasswordDto passwordDto) {
+    public ResponseEntity<?> changePassword(@RequestBody PasswordDto passwordDto, HttpServletRequest request) {
 
         try {
             return new ResponseEntity<>(
-                    userService.changePassword(passwordDto),
+                    userService.changePassword(passwordDto, request),
                     HttpStatus.OK);
 
-        } catch (CredentialsInvalidException e) {
+        } catch (Exception e) {
             return applicationExceptionHandler.handleCustomException(e);
         }
 
     }
 
     @PatchMapping("/api/v1/user/deactivate-user")
-    public ResponseEntity<?> deactivateUser(@RequestParam Long userId) {
-        return new ResponseEntity<>(userService.deactivateUser(userId), HttpStatus.OK);
+    public ResponseEntity<?> deactivateUser(@RequestParam Long userId, HttpServletRequest request) {
+        try {
+
+            return new ResponseEntity<>(userService.deactivateUser(userId, request), HttpStatus.OK);
+
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
     }
 
     @PatchMapping("/api/v1/user/activate-user")
-    public ResponseEntity<?> activateUser(@RequestParam Long userId) {
-        return new ResponseEntity<>(userService.activateUser(userId), HttpStatus.OK);
+    public ResponseEntity<?> activateUser(@RequestParam Long userId, HttpServletRequest request) {
+        try {
+            return new ResponseEntity<>(userService.activateUser(userId, request), HttpStatus.OK);
+
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
     }
 
 }

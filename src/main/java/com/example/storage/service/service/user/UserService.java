@@ -14,18 +14,18 @@ import com.example.storage.service.dto.UserDto;
 
 @Service
 public interface UserService {
-    public UserDto createUser(UserDto userDto);
+    public UserDto createUser(UserDto userDto, HttpServletRequest request);
 
-    public List<UserDto> getAllUsers();
+    public List<UserDto> getAllUsers(HttpServletRequest request);
 
-    public UserDto modifyUser(Long userId, UserDto userDto);
+    public UserDto modifyUser(Long userId, UserDto userDto, HttpServletRequest request);
 
-    public Map<String, String> deactivateUser(Long userId);
+    public Map<String, String> deactivateUser(Long userId, HttpServletRequest request);
 
-    public Map<String, String> activateUser(Long userId);
+    public Map<String, String> activateUser(Long userId, HttpServletRequest request);
 
     public Map<String, Object> loginUser(LoginDto loginDto, HttpServletRequest request, HttpServletResponse response);
 
-    public Map<String, String> changePassword(PasswordDto passwordDto);
+    public Map<String, String> changePassword(PasswordDto passwordDto, HttpServletRequest request);
 
 }

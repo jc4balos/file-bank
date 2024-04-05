@@ -17,6 +17,7 @@ import com.example.storage.service.dto.LoginDto;
 import com.example.storage.service.dto.PasswordDto;
 import com.example.storage.service.dto.UserDto;
 import com.example.storage.service.exception.CredentialsInvalidException;
+import com.example.storage.service.exception.SessionNotFoundException;
 import com.example.storage.service.exception.UserNameAlreadyExistsException;
 import com.example.storage.service.mapper.MessageMapper;
 import com.example.storage.service.mapper.UserMapper;
@@ -35,51 +36,115 @@ public class UserServiceImpl implements UserService {
     private final MessageMapper messageMapper;
 
     @Override
-    public UserDto createUser(UserDto userDto) {
+    public UserDto createUser(UserDto userDto, HttpServletRequest request) {
 
         try {
-            User user = userMapper.toUser(userDto);
-            userRepository.save(user);
-            userDto.setUserId(user.getUserId());
-            return userDto;
-        } catch (DataIntegrityViolationException e) {
-            throw new UserNameAlreadyExistsException("Username already exist");
+            HttpSession session = request.getSession();
+            Long userId = (Long) session.getAttribute("userId");
+            if (userId != null) {
+                User user = userMapper.toUser(userDto);
+                userRepository.save(user);
+
+                userDto.setUserId(user.getUserId());
+                return userDto;
+
+            } else {
+                throw new SessionNotFoundException("Session not found. Please log in.");
+            }
+
+        } catch (Exception e) {
+            if (e instanceof DataIntegrityViolationException) {
+                throw new UserNameAlreadyExistsException("Username already exist");
+            } else {
+                throw e;
+
+            }
 
         }
 
     }
 
     @Override
-    public List<UserDto> getAllUsers() {
-        return userRepository.findAll().stream().map(userMapper::toUserDto).collect(Collectors.toList());
+    public List<UserDto> getAllUsers(HttpServletRequest request) {
+        try {
+            HttpSession session = request.getSession();
+            Long userId = (Long) session.getAttribute("userId");
+            if (userId != null) {
+                return userRepository.findAll().stream().map(userMapper::toUserDto).collect(Collectors.toList());
+            } else {
+                throw new SessionNotFoundException("Session not found. Please log in.");
+            }
+
+        } catch (Exception e) {
+            throw e;
+        }
+
     }
 
     @Override
-    public UserDto modifyUser(Long userId, UserDto userDto) {
-        User user = userRepository.findById(userId).get();
-        userMapper.toUser(userDto);
+    public UserDto modifyUser(Long userId, UserDto userDto, HttpServletRequest request) {
+        try {
+            HttpSession session = request.getSession();
+            Long sessionUserId = (Long) session.getAttribute("userId");
+            if (sessionUserId != null) {
+                User user = userRepository.findById(userId).get();
+                userMapper.toUser(userDto);
 
-        userRepository.save(user);
-        return userDto;
+                userRepository.save(user);
+                return userDto;
+            } else {
+                throw new SessionNotFoundException("Session not found. Please log in.");
+            }
+
+        } catch (Exception e) {
+            throw e;
+        }
+
     }
 
     @Override
-    public Map<String, String> deactivateUser(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User does not exist"));
-        user.setActive(false);
-        String userName = user.getUserName();
-        userRepository.save(user);
-        return messageMapper.mapMessage("User " + userName + " deactivated");
+    public Map<String, String> deactivateUser(Long userId, HttpServletRequest request) {
+        try {
+            HttpSession session = request.getSession();
+            Long sessionUserId = (Long) session.getAttribute("userId");
+            if (sessionUserId != null) {
+                User user = userRepository.findById(userId)
+                        .orElseThrow(() -> new IllegalArgumentException("User does not exist"));
+                user.setActive(false);
+                String userName = user.getUserName();
+                userRepository.save(user);
+                return messageMapper.mapMessage("User " + userName + " deactivated");
+            } else {
+                throw new SessionNotFoundException("Session not found. Please log in.");
+            }
+
+        } catch (Exception e) {
+            throw e;
+        }
+
     }
 
     @Override
-    public Map<String, String> activateUser(Long userId) {
-        User user = userRepository.findById(userId).get();
-        user.setActive(true);
-        String userName = user.getUserName();
-        userRepository.save(user);
-        return messageMapper.mapMessage("User " + userName + " activated");
+    public Map<String, String> activateUser(Long userId, HttpServletRequest request) {
+
+        try {
+            HttpSession session = request.getSession();
+            Long sessionUserId = (Long) session.getAttribute("userId");
+            if (sessionUserId != null) {
+                User user = userRepository.findById(userId).get();
+                user.setActive(true);
+                String userName = user.getUserName();
+                userRepository.save(user);
+                return messageMapper.mapMessage("User " + userName + " activated");
+            } else {
+                throw new SessionNotFoundException("Session not found. Please log in.");
+
+            }
+
+        } catch (Exception e) {
+            throw e;
+        }
+
     }
 
     @Override
@@ -111,15 +176,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<String, String> changePassword(PasswordDto passwordDto) {
-        User user = userRepository.findById(passwordDto.getUserId()).get();
+    public Map<String, String> changePassword(PasswordDto passwordDto, HttpServletRequest request) {
 
-        if (user.getPassword().equals(passwordDto.getOldPassword())) {
-            user.setPassword(passwordDto.getNewPassword());
-            userRepository.save(user);
-            return messageMapper.mapMessage("Password changed successfully");
+        HttpSession session = request.getSession();
+        Long sessionUserId = (Long) session.getAttribute("userId");
+        if (sessionUserId != null) {
+            User user = userRepository.findById(passwordDto.getUserId()).get();
+
+            if (user.getPassword().equals(passwordDto.getOldPassword())) {
+                user.setPassword(passwordDto.getNewPassword());
+                userRepository.save(user);
+                return messageMapper.mapMessage("Password changed successfully");
+            } else {
+                throw new CredentialsInvalidException("Invalid old password");
+            }
         } else {
-            throw new CredentialsInvalidException("Invalid old password");
+            throw new SessionNotFoundException("Session not found. Please log in.");
         }
     }
+
 }
