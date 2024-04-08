@@ -16,6 +16,7 @@ public interface FileAccessRepository extends JpaRepository<FileAccess, Long> {
                         AND a.folder_id = :folderParentId
                         AND b.access_level_id = c.access_level_id
                         AND b.file_id = a.file_id
+                        AND a.active= 1
                         AND b.allow_view_file=1
                         """)
         List<FileAccess> findFilesByFolderParentIdAndAccessLevel(@Param("folderParentId") Long folderId,
@@ -30,6 +31,7 @@ public interface FileAccessRepository extends JpaRepository<FileAccess, Long> {
                         AND b.access_level_id = c.access_level_id
                         AND b.file_id = a.file_id
                         AND b.allow_view_file=1
+                        AND a.active =1
                         AND a.file_name LIKE %:search%
                         """)
         List<FileAccess> searchFilesByFolderParentIdAndAccessLevel(@Param("folderParentId") Long folderId,
