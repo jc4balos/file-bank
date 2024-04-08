@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,4 +70,12 @@ public class FileController {
         }
     }
 
+    @GetMapping("/api/v1/file/download-file")
+    public ResponseEntity<?> downloadFile(@RequestParam Long fileId, HttpServletRequest request) {
+        try {
+            return new ResponseEntity<>(fileService.downloadFile(fileId, request), HttpStatus.OK);
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
+    }
 }

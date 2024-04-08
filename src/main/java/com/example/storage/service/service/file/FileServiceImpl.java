@@ -1,6 +1,7 @@
 package com.example.storage.service.service.file;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -17,6 +18,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -167,6 +169,29 @@ public class FileServiceImpl implements FileService {
             throw e;
         }
 
+    }
+
+    @Override
+    public InputStreamResource downloadFile(Long fileId, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Long userId = (Long) session.getAttribute("userId");
+
+        if (userId == null) {
+            throw new IllegalArgumentException("Session not found. Please log in.");
+        }
+
+        FileData file = fileRepository.findById(fileId)
+                .orElseThrow(() -> new IllegalArgumentException("File not found"));
+
+        String fullPath = file.getFilePath();
+        File fileToDownload = new File(fullPath);
+
+        try {
+            FileInputStream fileInputStream = new FileInputStream(fileToDownload);
+            return new InputStreamResource(fileInputStream);
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException("File not found", e);
+        }
     }
 
 }

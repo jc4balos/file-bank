@@ -7,6 +7,7 @@ import java.util.concurrent.CompletableFuture;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 
 import com.example.storage.service.dto.FileDto;
@@ -19,7 +20,7 @@ public interface FileService {
             throws FileNotFoundException, IOException; // Uploads file
     // Add folder on this function
 
-    // public MultipartFile downloadFile(Long fileId); // Downloads file
+    public InputStreamResource downloadFile(Long fileId, HttpServletRequest request); // Downloads file
 
     // public Map<String, Object> viewFile(Long fileId, HttpServletRequest request);
     // // View file
