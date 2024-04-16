@@ -9,8 +9,8 @@ public class CookieConfig {
     @Bean
     public DefaultCookieSerializer defaultCookieSerializer() {
         DefaultCookieSerializer serializer = new DefaultCookieSerializer();
-        serializer.setSameSite("Strinow ct"); // Set SameSite attribute
-        serializer.setUseSecureCookie(true); // Set Secure attribute
+        serializer.setSameSite("Strict"); // Set SameSite attribute
+        serializer.setUseSecureCookie(false); // Set Secure attribute
         serializer.setUseHttpOnlyCookie(false); // Turn off HttpOnly attribute
 
         return serializer;
