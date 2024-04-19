@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class UserDto {
+public class CreateUserDto {
 
     private Long userId;
 
@@ -38,9 +38,6 @@ public class UserDto {
 
     @NotNull(message = "Access Level is required")
     private Long accessLevelId;
-
-    @NotNull
-    private Boolean active;
 
     @NotEmpty(message = "Title is required")
     @NotNull(message = "Title is required")

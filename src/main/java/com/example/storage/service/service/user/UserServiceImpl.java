@@ -13,12 +13,14 @@ import javax.servlet.http.HttpSession;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import com.example.storage.service.dto.CreateUserDto;
 import com.example.storage.service.dto.LoginDto;
 import com.example.storage.service.dto.PasswordDto;
 import com.example.storage.service.dto.UserDto;
 import com.example.storage.service.exception.CredentialsInvalidException;
 import com.example.storage.service.exception.SessionNotFoundException;
 import com.example.storage.service.exception.UserNameAlreadyExistsException;
+import com.example.storage.service.mapper.CreateUserMapper;
 import com.example.storage.service.mapper.MessageMapper;
 import com.example.storage.service.mapper.UserMapper;
 import com.example.storage.service.model.User;
@@ -32,19 +34,20 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final CreateUserMapper createUserMapper;
 
     private final MessageMapper messageMapper;
 
     @Override
-    public UserDto createUser(UserDto userDto, HttpServletRequest request) {
+    public CreateUserDto createUser(CreateUserDto userDto, HttpServletRequest request) {
 
         try {
             HttpSession session = request.getSession();
             Long userId = (Long) session.getAttribute("userId");
             if (userId != null) {
-                User user = userMapper.toUser(userDto);
+                User user = createUserMapper.toUser(userDto);
+                user.setActive(true);
                 userRepository.save(user);
-
                 userDto.setUserId(user.getUserId());
                 return userDto;
 

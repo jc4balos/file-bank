@@ -8,13 +8,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Service;
 
+import com.example.storage.service.dto.CreateUserDto;
 import com.example.storage.service.dto.LoginDto;
 import com.example.storage.service.dto.PasswordDto;
 import com.example.storage.service.dto.UserDto;
 
 @Service
 public interface UserService {
-    public UserDto createUser(UserDto userDto, HttpServletRequest request);
+    public CreateUserDto createUser(CreateUserDto userDto, HttpServletRequest request);
 
     public List<UserDto> getAllUsers(HttpServletRequest request);
 

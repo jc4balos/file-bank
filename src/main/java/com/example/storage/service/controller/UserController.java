@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.storage.service.dto.CreateUserDto;
 import com.example.storage.service.dto.LoginDto;
 import com.example.storage.service.dto.PasswordDto;
 import com.example.storage.service.dto.UserDto;
@@ -32,7 +33,7 @@ public class UserController {
     private ApplicationExceptionHandler applicationExceptionHandler;
 
     @PostMapping("/api/v1/user/create-user")
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserDto userDto,
+    public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserDto userDto,
             BindingResult bindingResult, HttpServletRequest request) {
 
         try {
