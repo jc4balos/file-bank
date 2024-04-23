@@ -90,10 +90,8 @@ public class UserServiceImpl implements UserService {
             HttpSession session = request.getSession();
             Long sessionUserId = (Long) session.getAttribute("userId");
             if (sessionUserId != null) {
-                User user = userRepository.findById(userId).get();
-                userMapper.toUser(userDto);
-
-                userRepository.save(user);
+                User modifiedUser = userMapper.modifyUser(userDto, userId);
+                userRepository.save(modifiedUser);
                 return userDto;
             } else {
                 throw new SessionNotFoundException("Session not found. Please log in.");

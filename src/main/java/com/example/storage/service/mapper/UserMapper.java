@@ -4,12 +4,15 @@ import org.springframework.stereotype.Component;
 
 import com.example.storage.service.dto.UserDto;
 import com.example.storage.service.model.User;
+import com.example.storage.service.repository.UserRepository;
 
 import lombok.Data;
 
 @Data
 @Component
 public class UserMapper {
+
+    private final UserRepository userRepository;
 
     public UserDto toUserDto(User user) {
         UserDto userDto = new UserDto();
@@ -36,5 +39,20 @@ public class UserMapper {
         user.setActive(userDto.getActive());
         user.setTitle(userDto.getTitle());
         return user;
+    }
+
+    public User modifyUser(UserDto userDto, Long userId) {
+
+        User user = userRepository.findById(userId).get();
+        user.setFirstName(userDto.getFirstName());
+        user.setMiddleName(userDto.getMiddleName());
+        user.setLastName(userDto.getLastName());
+        user.setUserName(userDto.getUserName());
+        user.setPassword(userDto.getPassword());
+        user.setAccessLevelId(userDto.getAccessLevelId());
+        user.setActive(userDto.getActive());
+        user.setTitle(userDto.getTitle());
+        return user;
+
     }
 }
