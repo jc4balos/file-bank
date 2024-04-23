@@ -73,7 +73,8 @@ public class UserServiceImpl implements UserService {
             HttpSession session = request.getSession();
             Long userId = (Long) session.getAttribute("userId");
             if (userId != null) {
-                return userRepository.findAll().stream().map(userMapper::toUserDto).collect(Collectors.toList());
+                return userRepository.getAllActiveUsers().stream().map(userMapper::toUserDto)
+                        .collect(Collectors.toList());
             } else {
                 throw new SessionNotFoundException("Session not found. Please log in.");
             }
@@ -96,7 +97,6 @@ public class UserServiceImpl implements UserService {
             } else {
                 throw new SessionNotFoundException("Session not found. Please log in.");
             }
-
         } catch (Exception e) {
             throw e;
         }
