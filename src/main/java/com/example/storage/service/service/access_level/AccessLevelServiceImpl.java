@@ -35,19 +35,15 @@ public class AccessLevelServiceImpl implements AccessLevelService {
             if (session.getAttribute("userId") != null) {
                 String accessLevelName = createAccessLevelDto.getAccessLevelName();
                 AccessLevel accessLevel = new AccessLevel();
+                System.out.print(accessLevelName);
+                accessLevel.setAccessLevelName(accessLevelName);
+                accessLevel.setActive(true);
+                accessLevelRepository.save(accessLevel);
+                return messageMapper.mapMessage("Access level " + accessLevel.getAccessLevelName() + " added");
 
-                if (accessLevelName != null || !accessLevelName.isEmpty()) {
-                    accessLevel.setAccessLevelName(accessLevelName);
-                    accessLevel.setActive(true);
-                    accessLevelRepository.save(accessLevel);
-                    return messageMapper.mapMessage("Access level " + accessLevel.getAccessLevelName() + " added");
-                } else {
-                    return messageMapper.mapMessage("Access level name cannot be empty");
-                }
             } else {
 
                 throw new SessionNotFoundException("Session not found. Please log in.");
-
             }
 
         } catch (Exception e) {
@@ -64,16 +60,13 @@ public class AccessLevelServiceImpl implements AccessLevelService {
                 return accessLevelRepository.findByActiveAccessLevel().stream()
                         .map(accessLevelMapper::toAccessLevelDtoView)
                         .collect(Collectors.toList());
-
             } else {
                 throw new SessionNotFoundException("Session not found. Please log in.");
 
             }
-
         } catch (Exception e) {
             throw e;
         }
-
     }
 
     @Override
@@ -86,9 +79,7 @@ public class AccessLevelServiceImpl implements AccessLevelService {
                         .map(accessLevelMapper::toAccessLevelDtoView)
                         .collect(Collectors.toList());
             } else {
-
                 throw new SessionNotFoundException("Session not found. Please log in.");
-
             }
 
         } catch (Exception e) {

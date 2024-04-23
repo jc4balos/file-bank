@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.storage.service.dto.CreateAccessLevelDto;
@@ -26,13 +28,24 @@ public class AccessLevelController {
     private ApplicationExceptionHandler applicationExceptionHandler;
 
     @PostMapping("/api/v1/access-level/create-access-level")
-    public ResponseEntity<?> createAccessLevel(@Valid CreateAccessLevelDto createAccessLevelDto,
-            HttpServletRequest request) {
+    public ResponseEntity<?> createAccessLevel(@Valid @RequestBody CreateAccessLevelDto createAccessLevelDto,
+            HttpServletRequest request, BindingResult bindingResult) {
+        System.out.println(createAccessLevelDto);
+
         try {
-            return new ResponseEntity<>(accessLevelService.addAccessLevel(createAccessLevelDto, request),
-                    HttpStatus.OK);
+
+            if (!bindingResult.hasErrors()) {
+                return new ResponseEntity<>(accessLevelService.addAccessLevel(createAccessLevelDto, request),
+                        HttpStatus.OK);
+            } else {
+                System.out.println("handled bad request");
+                return applicationExceptionHandler.handleBadRequest(bindingResult);
+            }
 
         } catch (Exception e) {
+
+            System.out.println("handled exception");
+
             return applicationExceptionHandler.handleCustomException(e);
         }
     }

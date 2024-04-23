@@ -17,6 +17,7 @@ import com.example.storage.service.dto.CreateUserDto;
 import com.example.storage.service.dto.LoginDto;
 import com.example.storage.service.dto.PasswordDto;
 import com.example.storage.service.dto.UserDto;
+import com.example.storage.service.dto.UserDtoView;
 import com.example.storage.service.exception.CredentialsInvalidException;
 import com.example.storage.service.exception.SessionNotFoundException;
 import com.example.storage.service.exception.UserNameAlreadyExistsException;
@@ -68,12 +69,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUsers(HttpServletRequest request) {
+    public List<UserDtoView> getAllUsers(HttpServletRequest request) {
         try {
             HttpSession session = request.getSession();
             Long userId = (Long) session.getAttribute("userId");
             if (userId != null) {
-                return userRepository.getAllActiveUsers().stream().map(userMapper::toUserDto)
+                return userRepository.getAllActiveUsers().stream().map(userMapper::toUserDtoView)
                         .collect(Collectors.toList());
             } else {
                 throw new SessionNotFoundException("Session not found. Please log in.");

@@ -12,12 +12,13 @@ import com.example.storage.service.dto.CreateUserDto;
 import com.example.storage.service.dto.LoginDto;
 import com.example.storage.service.dto.PasswordDto;
 import com.example.storage.service.dto.UserDto;
+import com.example.storage.service.dto.UserDtoView;
 
 @Service
 public interface UserService {
     public CreateUserDto createUser(CreateUserDto userDto, HttpServletRequest request);
 
-    public List<UserDto> getAllUsers(HttpServletRequest request);
+    public List<UserDtoView> getAllUsers(HttpServletRequest request);
 
     public UserDto modifyUser(Long userId, UserDto userDto, HttpServletRequest request);
 

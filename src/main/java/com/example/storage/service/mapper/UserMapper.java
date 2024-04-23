@@ -3,7 +3,10 @@ package com.example.storage.service.mapper;
 import org.springframework.stereotype.Component;
 
 import com.example.storage.service.dto.UserDto;
+import com.example.storage.service.dto.UserDtoView;
+import com.example.storage.service.model.AccessLevel;
 import com.example.storage.service.model.User;
+import com.example.storage.service.repository.AccessLevelRepository;
 import com.example.storage.service.repository.UserRepository;
 
 import lombok.Data;
@@ -13,6 +16,7 @@ import lombok.Data;
 public class UserMapper {
 
     private final UserRepository userRepository;
+    private final AccessLevelRepository accessLevelRepository;
 
     public UserDto toUserDto(User user) {
         UserDto userDto = new UserDto();
@@ -26,6 +30,25 @@ public class UserMapper {
         userDto.setActive(user.getActive());
         userDto.setTitle(user.getTitle());
         return userDto;
+    }
+
+    public UserDtoView toUserDtoView(User user) {
+        UserDtoView userDtoView = new UserDtoView();
+        Long userAccessLevelId = user.getAccessLevelId();
+        AccessLevel accessLevel = accessLevelRepository.findById(userAccessLevelId)
+                .orElseThrow(() -> new IllegalArgumentException("User does not exist"));
+        String accessLevelName = accessLevel.getAccessLevelName();
+
+        userDtoView.setUserId(user.getUserId());
+        userDtoView.setFirstName(user.getFirstName());
+        userDtoView.setMiddleName(user.getMiddleName());
+        userDtoView.setLastName(user.getLastName());
+        userDtoView.setUserName(user.getUserName());
+        userDtoView.setAccessLevelId(userAccessLevelId);
+        userDtoView.setAccessLevelName(accessLevelName);
+        userDtoView.setActive(user.getActive());
+        userDtoView.setTitle(user.getTitle());
+        return userDtoView;
     }
 
     public User toUser(UserDto userDto) {
