@@ -38,13 +38,10 @@ public class AccessLevelController {
                 return new ResponseEntity<>(accessLevelService.addAccessLevel(createAccessLevelDto, request),
                         HttpStatus.OK);
             } else {
-                System.out.println("handled bad request");
                 return applicationExceptionHandler.handleBadRequest(bindingResult);
             }
 
         } catch (Exception e) {
-
-            System.out.println("handled exception");
 
             return applicationExceptionHandler.handleCustomException(e);
         }
