@@ -63,6 +63,19 @@ public class FolderController {
 
     }
 
+    @GetMapping("/api/v1/folder/get-folder")
+    public ResponseEntity<?> getFolder(@RequestParam Long folderId,
+            HttpServletRequest request) {
+        try {
+
+            return new ResponseEntity<>(folderService.getFolder(folderId, request),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
+
+    }
+
     @GetMapping("/api/v1/folder/get-files-and-folders/search")
     public ResponseEntity<?> searchFilesAndFolders(@RequestParam Long folderId,
             HttpServletRequest request, @RequestParam String search) {

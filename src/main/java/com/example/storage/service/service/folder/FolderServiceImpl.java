@@ -235,4 +235,27 @@ public class FolderServiceImpl implements FolderService {
 
                 }
         }
+
+        @Override
+        public FolderDtoView getFolder(Long folderId, HttpServletRequest request) {
+
+                try {
+                        HttpSession session = request.getSession();
+                        Long userId = (Long) session.getAttribute("userId");
+                        if (userId != null) {
+                                Folder folder = folderRepository.findById(folderId)
+                                                .orElseThrow(() -> new IllegalArgumentException(
+                                                                "Folder does not exist"));
+
+                                return folderMapper.toFolderDtoView(folder);
+                        } else {
+                                throw new SessionNotFoundException("Session not found. Please log in.");
+
+                        }
+
+                } catch (Exception e) {
+                        throw e;
+                }
+
+        }
 }

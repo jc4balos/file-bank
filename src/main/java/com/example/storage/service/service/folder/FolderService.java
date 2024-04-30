@@ -19,6 +19,8 @@ public interface FolderService {
     public Map<String, Object> searchFilesAndFolders(Long folderId, HttpServletRequest request, String search);
     // is enabled
 
+    public FolderDtoView getFolder(Long folderId, HttpServletRequest request);
+
     public Map<String, String> deleteFolder(Long folderId, HttpServletRequest request);
     // // contains {folders:List<FolderDto>, files:List<FileDto>}
 
