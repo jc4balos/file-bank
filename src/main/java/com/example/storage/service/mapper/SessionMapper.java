@@ -20,7 +20,7 @@ public class SessionMapper {
             sessionDto.setUserFullName(session.getAttribute("userFullName").toString());
             sessionDto.setUserId((Long) session.getAttribute("userId"));
             sessionDto.setUserName(session.getAttribute("userName").toString());
-            sessionDto.setAccessLevelId((Long) session.getAttribute("accessLevelId"));
+            sessionDto.setAccessLevelId((Long) session.getAttribute("userAccessLevel"));
             sessionDto.setUserTitle(session.getAttribute("userTitle").toString());
             return sessionDto;
 
