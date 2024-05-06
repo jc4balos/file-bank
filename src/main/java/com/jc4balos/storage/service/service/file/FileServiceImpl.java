@@ -12,9 +12,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.scheduling.annotation.Async;
@@ -32,6 +29,8 @@ import com.jc4balos.storage.service.repository.FileRepository;
 import com.jc4balos.storage.service.service.file_access.FileAccessService;
 import com.jc4balos.storage.service.util.FileEncryptor;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;

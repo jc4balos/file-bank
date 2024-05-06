@@ -1,7 +1,5 @@
 package com.jc4balos.storage.service.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +20,9 @@ import com.jc4balos.storage.service.dto.UserDto;
 import com.jc4balos.storage.service.exception.ApplicationExceptionHandler;
 import com.jc4balos.storage.service.exception.CredentialsInvalidException;
 import com.jc4balos.storage.service.service.user.UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class UserController {

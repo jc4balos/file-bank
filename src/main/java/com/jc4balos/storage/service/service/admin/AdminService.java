@@ -2,7 +2,7 @@ package com.jc4balos.storage.service.service.admin;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
 

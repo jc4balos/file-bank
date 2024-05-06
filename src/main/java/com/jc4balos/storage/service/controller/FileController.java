@@ -2,9 +2,6 @@ package com.jc4balos.storage.service.controller;
 
 import java.util.concurrent.CompletableFuture;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +17,9 @@ import com.jc4balos.storage.service.dto.FileDto;
 import com.jc4balos.storage.service.dto.FileDtoView;
 import com.jc4balos.storage.service.exception.ApplicationExceptionHandler;
 import com.jc4balos.storage.service.service.file.FileService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 @Controller
 public class FileController {

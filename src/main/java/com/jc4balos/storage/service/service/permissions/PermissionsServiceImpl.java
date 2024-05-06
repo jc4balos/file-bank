@@ -3,9 +3,6 @@ package com.jc4balos.storage.service.service.permissions;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.springframework.stereotype.Service;
 
 import com.jc4balos.storage.service.dto.FileDtoView;
@@ -18,6 +15,8 @@ import com.jc4balos.storage.service.model.FolderAccess;
 import com.jc4balos.storage.service.repository.FileAccessRepository;
 import com.jc4balos.storage.service.repository.FolderAccessRepository;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 

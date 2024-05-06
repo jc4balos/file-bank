@@ -3,9 +3,6 @@ package com.jc4balos.storage.service.service.user;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.stereotype.Service;
 
 import com.jc4balos.storage.service.dto.CreateUserDto;
@@ -13,6 +10,9 @@ import com.jc4balos.storage.service.dto.LoginDto;
 import com.jc4balos.storage.service.dto.PasswordDto;
 import com.jc4balos.storage.service.dto.UserDto;
 import com.jc4balos.storage.service.dto.UserDtoView;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public interface UserService {

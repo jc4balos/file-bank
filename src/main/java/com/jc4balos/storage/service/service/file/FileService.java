@@ -5,13 +5,13 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 
 import com.jc4balos.storage.service.dto.FileDto;
 import com.jc4balos.storage.service.dto.FileDtoView;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public interface FileService {

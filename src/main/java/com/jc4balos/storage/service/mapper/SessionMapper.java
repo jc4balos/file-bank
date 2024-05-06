@@ -1,13 +1,12 @@
 package com.jc4balos.storage.service.mapper;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.springframework.stereotype.Component;
 
 import com.jc4balos.storage.service.dto.SessionDto;
 import com.jc4balos.storage.service.exception.SessionNotFoundException;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.Data;
 
 @Data

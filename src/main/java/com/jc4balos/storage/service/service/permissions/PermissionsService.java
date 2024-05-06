@@ -2,9 +2,9 @@ package com.jc4balos.storage.service.service.permissions;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Service;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public interface PermissionsService {
