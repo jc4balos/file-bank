@@ -26,11 +26,11 @@ public class FolderAccess {
     private Long folderAccessId;
 
     @ManyToOne(targetEntity = Folder.class)
-    @JoinColumn(nullable = false, name = "folder_id")
+    @JoinColumn(nullable = false, name = "folder_access_folder_id")
     private Folder folder;
 
     @ManyToOne(targetEntity = AccessLevel.class)
-    @JoinColumn(nullable = false, name = "access_level_id")
+    @JoinColumn(nullable = false, name = "folder_access_access_level_id")
     private AccessLevel accessLevel;
 
     @Column(nullable = false, name = "allow_add_folder")

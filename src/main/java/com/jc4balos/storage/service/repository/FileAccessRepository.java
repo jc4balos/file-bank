@@ -13,9 +13,9 @@ public interface FileAccessRepository extends JpaRepository<FileAccess, Long> {
         @Query(nativeQuery = true, value = """
                         Select * from files as a, file_access as b, access_level as c
                         WHERE c.access_level_id= :accessLevelId
-                        AND a.folder_id = :folderParentId
-                        AND b.access_level_id = c.access_level_id
-                        AND b.file_id = a.file_id
+                        AND a.file_folder_id = :folderParentId
+                        AND b.file_access_access_level_id = c.access_level_id
+                        AND b.file_access_file_id = a.file_id
                         AND a.active= 1
                         AND b.allow_view_file=1
                         """)

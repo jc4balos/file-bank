@@ -39,7 +39,7 @@ public class User {
     @Column(nullable = false, name = "password")
     private String password;
 
-    @Column(nullable = false, name = "access_level_id")
+    @Column(nullable = false, name = "user_access_level_id")
     private Long accessLevelId;
 
     @Column(nullable = false, name = "active")

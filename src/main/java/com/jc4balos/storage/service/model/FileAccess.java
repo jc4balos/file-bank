@@ -26,11 +26,11 @@ public class FileAccess {
     private Long fileAccessId;
 
     @ManyToOne(targetEntity = FileData.class)
-    @JoinColumn(nullable = false, name = "file_id")
+    @JoinColumn(nullable = false, name = "file_access_file_id")
     private FileData fileData;
 
     @ManyToOne(targetEntity = AccessLevel.class)
-    @JoinColumn(nullable = false, name = "access_level_id")
+    @JoinColumn(nullable = false, name = "file_access_access_level_id")
     private AccessLevel accessLevel;
 
     @Column(nullable = false, name = "allow_modify_file")
