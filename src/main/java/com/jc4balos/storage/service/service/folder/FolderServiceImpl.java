@@ -59,7 +59,7 @@ public class FolderServiceImpl implements FolderService {
 
                 try {
                         HttpSession session = request.getSession();
-                        System.out.println(session.getAttribute("userId"));
+                        System.out.println("user Id requeting session" + session.getAttribute("userId"));
                         User owner = userRepository.findById((Long) session.getAttribute("userId"))
                                         .orElseThrow(() -> new IllegalArgumentException("User does not exist"));
                         Folder folder = new Folder();
@@ -106,35 +106,38 @@ public class FolderServiceImpl implements FolderService {
                         Map<String, Object> response = new HashMap<>();
 
                         HttpSession session = request.getSession();
-                        System.out.println(session.getAttribute("userId"));
-                        Long userAccessLevelId = userRepository.findById((Long) session.getAttribute("userId"))
-                                        .orElseThrow(() -> new IllegalArgumentException("User does not exist"))
-                                        .getAccessLevelId();
+                        Long userId = (Long) session.getAttribute("userId");
+                        System.out.println(userId);
 
-                        System.out.println("User Access Level Id: " + userAccessLevelId);
-                        System.out.println("Folder Id: " + folderId);
+                        if (userId != null) {
+                                Long userAccessLevelId = userRepository.findById(userId)
+                                                .orElseThrow(() -> new IllegalArgumentException("User does not exist"))
+                                                .getAccessLevelId();
+                                List<FolderAccess> folders = folderAccessRepository
+                                                .findFoldersByFolderParentIdAndAccessLevel(
+                                                                folderId,
+                                                                userAccessLevelId);
+                                System.out.println(folders);
 
-                        List<FolderAccess> folders = folderAccessRepository.findFoldersByFolderParentIdAndAccessLevel(
-                                        folderId,
-                                        userAccessLevelId);
+                                List<FolderDtoView> mappedFolders = folderMapper.toFolderDtoWithPerms(folders);
 
-                        List<FolderDtoView> mappedFolders = folderMapper.toFolderDtoWithPerms(folders);
+                                List<FileAccess> files = fileAccessRepository.findFilesByFolderParentIdAndAccessLevel(
+                                                folderId,
+                                                userAccessLevelId);
 
-                        List<FileAccess> files = fileAccessRepository.findFilesByFolderParentIdAndAccessLevel(
+                                List<FileDtoView> mappedFiles = fileMapper.toDtoViewWithPerms(files);
 
-                                        folderId, userAccessLevelId);
-
-                        List<FileDtoView> mappedFiles = fileMapper.toDtoViewWithPerms(files);
-
-                        response.put("folders", mappedFolders);
-                        response.put("files", mappedFiles);
-                        return response;
-                } catch (Exception e) {
-                        if (e instanceof RuntimeException) {
-                                throw new SessionNotFoundException("Session not found. Please login.");
+                                response.put("folders", mappedFolders);
+                                response.put("files", mappedFiles);
+                                return response;
                         } else {
-                                throw e;
+
+                                throw new SessionNotFoundException("Session not found. Please log in.");
                         }
+
+                } catch (Exception e) {
+
+                        throw e;
                 }
 
         }
