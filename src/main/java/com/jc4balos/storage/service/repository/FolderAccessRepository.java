@@ -40,7 +40,7 @@ public interface FolderAccessRepository extends JpaRepository<FolderAccess, Long
 
         @Query(nativeQuery = true, value = """
                         SELECT * FROM folder_access WHERE
-                        access_level_id = :accessLevelId AND folder_id = :folderId
+                        folder_access_access_level_id = :accessLevelId AND folder_id = :folderId
                                 """)
         Optional<FolderAccess> findByFolderIdAndAccessLevelId(@Param("folderId") Long folderId,
                         @Param("accessLevelId") Long accessLevelId);
