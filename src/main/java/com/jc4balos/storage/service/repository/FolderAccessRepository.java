@@ -39,6 +39,18 @@ public interface FolderAccessRepository extends JpaRepository<FolderAccess, Long
                         @Param("search") String search);
 
         @Query(nativeQuery = true, value = """
+                        SELECT *  FROM folder as a, folder_access as b, access_level as c
+                        WHERE c.access_level_id = :accessLevelId
+                        AND c.access_level_id = b.folder_access_access_level_id
+                        AND b.folder_access_folder_id = a.folder_id
+                        AND b.allow_view_folder=1
+                        AND a.active = 1
+                        AND a.folder_name LIKE %:search%
+                        """)
+        List<FolderAccess> searchFoldersGlobal(@Param("accessLevelId") Long accessLevelId,
+                        @Param("search") String search);
+
+        @Query(nativeQuery = true, value = """
                         SELECT * FROM folder_access WHERE
                         folder_access_access_level_id = :accessLevelId AND folder_id = :folderId
                                 """)

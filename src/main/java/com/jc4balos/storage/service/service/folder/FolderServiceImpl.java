@@ -185,6 +185,48 @@ public class FolderServiceImpl implements FolderService {
         }
 
         @Override
+        public Map<String, Object> searchGlobal(HttpServletRequest request, String search) {
+
+                try {
+                        HttpSession session = request.getSession();
+                        Long userId = (Long) session.getAttribute("userId");
+                        if (userId != null) {
+                                Map<String, Object> response = new HashMap<>();
+
+                                String fileToSearch = search;
+                                String folderToSearch = search;
+
+                                Long userAccessLevelId = userRepository.findById(userId)
+                                                .orElseThrow(() -> new IllegalArgumentException("User does not exist"))
+                                                .getAccessLevelId();
+
+                                List<FolderAccess> folders = folderAccessRepository
+                                                .searchFoldersGlobal(
+                                                                userAccessLevelId,
+                                                                folderToSearch);
+
+                                List<FolderDtoView> mappedFolders = folderMapper.toFolderDtoWithPerms(folders);
+
+                                List<FileAccess> files = fileAccessRepository.searchFilesGlobal(
+                                                userAccessLevelId,
+                                                fileToSearch);
+
+                                List<FileDtoView> mappedFiles = fileMapper.toDtoViewWithPerms(files);
+
+                                response.put("folders", mappedFolders);
+                                response.put("files", mappedFiles);
+                                return response;
+                        } else {
+                                throw new SessionNotFoundException("Session not found. Please log in.");
+                        }
+
+                } catch (Exception e) {
+                        throw e;
+                }
+
+        }
+
+        @Override
         public FolderDtoView modifyFolder(Long folderId, HttpServletRequest request, FolderDto folderDto) {
 
                 try {

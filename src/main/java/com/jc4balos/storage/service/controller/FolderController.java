@@ -88,6 +88,18 @@ public class FolderController {
 
     }
 
+    @GetMapping("/api/v2/folder/get-files-and-folders/search")
+    public ResponseEntity<?> searchFilesAndFolders(
+            HttpServletRequest request, @RequestParam String search) {
+        try {
+            return new ResponseEntity<>(folderService.searchGlobal(request, search),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
+
+    }
+
     @PatchMapping("/api/v1/folder/modify-folder")
     public ResponseEntity<?> modifyFolder(@RequestParam Long folderId,
             HttpServletRequest request, @Valid @RequestBody FolderDto folderDto) {
