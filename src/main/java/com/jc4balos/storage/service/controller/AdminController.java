@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.jc4balos.storage.service.exception.ApplicationExceptionHandler;
@@ -41,16 +40,6 @@ public class AdminController {
         } catch (Exception e) {
             return applicationExceptionHandler.handleCustomException(e);
         }
-    }
-
-    @PostMapping("/shutdown")
-    public ResponseEntity<?> shutdown(HttpServletRequest request) {
-        try {
-            return new ResponseEntity<>(adminService.shutdown(request), HttpStatus.OK);
-        } catch (Exception e) {
-            return applicationExceptionHandler.handleCustomException(e);
-        }
-
     }
 
 }
