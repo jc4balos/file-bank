@@ -128,4 +128,18 @@ public class FolderController {
 
     }
 
+    @PatchMapping("/api/v1/folder/restore-folder")
+    public ResponseEntity<?> restoreFolder(@RequestParam Long folderId,
+            HttpServletRequest request) {
+
+        try {
+            return new ResponseEntity<>(folderService.restoreFolder(folderId, request),
+                    HttpStatus.OK);
+
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
+
+    }
+
 }

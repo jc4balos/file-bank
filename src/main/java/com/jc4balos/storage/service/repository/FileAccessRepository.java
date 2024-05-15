@@ -56,7 +56,7 @@ public interface FileAccessRepository extends JpaRepository<FileAccess, Long> {
 
         @Query(nativeQuery = true, value = """
                         SELECT * FROM file_access WHERE
-                         file_id = :fileId
+                         file_access_file_id = :fileId
                         """)
         Optional<List<FileAccess>> findByFileId(@Param("fileId") Long fileId);
 }

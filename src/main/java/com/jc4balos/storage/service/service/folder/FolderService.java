@@ -28,6 +28,5 @@ public interface FolderService {
 
     public FolderDtoView modifyFolder(Long folderId, HttpServletRequest request, FolderDto folderDto);
 
-    // public FolderDto restoreFolder(Long folderId, Long userId, HttpServletRequest
-    // request);
+    public Map<String, String> restoreFolder(Long folderId, HttpServletRequest request);
 }
