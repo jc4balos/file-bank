@@ -13,5 +13,5 @@ public interface AdminService {
 
     public Map<String, Object> getAllTrashFiles(HttpServletRequest request);
 
-    public void shutdown(HttpServletRequest request);
+    public String shutdown(HttpServletRequest request);
 }

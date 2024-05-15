@@ -44,8 +44,13 @@ public class AdminController {
     }
 
     @PostMapping("/shutdown")
-    public void shutdown(HttpServletRequest request) {
-        adminService.shutdown(request);
+    public ResponseEntity<?> shutdown(HttpServletRequest request) {
+        try {
+            return new ResponseEntity<>(adminService.shutdown(request), HttpStatus.OK);
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
+
     }
 
 }

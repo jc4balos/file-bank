@@ -127,14 +127,19 @@ public class AdminServiceImpl implements AdminService {
         } catch (Exception e) {
             throw e;
         }
-
     }
 
     @Override
-    @PreDestroy
-    public void shutdown(HttpServletRequest request) {
+    public String shutdown(HttpServletRequest request) {
         String ip = request.getRemoteAddr();
         System.out.println(ip);
+        shutdownImpl();
+        return "Shutdown Executed";
+    }
+
+    @PreDestroy
+    private void shutdownImpl() {
+        System.out.println("Shutting down storage service...");
         System.exit(0);
 
     }
