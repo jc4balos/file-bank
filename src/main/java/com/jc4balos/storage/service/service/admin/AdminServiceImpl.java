@@ -26,6 +26,7 @@ import com.jc4balos.storage.service.repository.FileRepository;
 import com.jc4balos.storage.service.repository.FolderAccessRepository;
 import com.jc4balos.storage.service.repository.FolderRepository;
 
+import jakarta.annotation.PreDestroy;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -126,6 +127,15 @@ public class AdminServiceImpl implements AdminService {
         } catch (Exception e) {
             throw e;
         }
+
+    }
+
+    @Override
+    @PreDestroy
+    public void shutdown(HttpServletRequest request) {
+        String ip = request.getRemoteAddr();
+        System.out.println(ip);
+        System.exit(0);
 
     }
 }
