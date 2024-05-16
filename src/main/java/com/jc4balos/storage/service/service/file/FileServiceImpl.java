@@ -40,7 +40,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FileServiceImpl implements FileService {
 
-    private final String folderPath = "D:\\Documents\\Repositories\\FileBank\\Storage\\";
+    private final String folderPath = "C:\\opa-file-bank-files";
 
     private final FileRepository fileRepository;
     private final FileMapper fileMapper;
@@ -57,6 +57,7 @@ public class FileServiceImpl implements FileService {
     public CompletableFuture<FileDtoView> createFile(HttpServletRequest request, FileDto fileDto)
             throws FileNotFoundException, IOException {
         try {
+
             HttpSession session = request.getSession();
             Long userId = (Long) session.getAttribute("userId");
 
@@ -84,9 +85,22 @@ public class FileServiceImpl implements FileService {
 
                 String encryptedFileNameWithExtension = encryptedFileName + "." + extension;
 
+
+                File folder = new File(folderPath);
+
+                if (!folder.exists()) {
+                  folder.mkdirs(); // Creates the folder and any necessary parent directories
+                  System.out.println("Folder created: " + folderPath);
+                } else {
+                  System.out.println("Folder already exists: " + folderPath);
+                }
+
+
                 String fullPath = Paths
                         .get(folderPath, encryptedFileNameWithExtension)
                         .toString();
+
+   
 
                 File destinationFile = new File(fullPath);
 
@@ -124,9 +138,12 @@ public class FileServiceImpl implements FileService {
                 throw new SessionNotFoundException("Session not found. Please log in.");
             }
 
-        } catch (Exception e) {
-            throw e;
-        }
+        }catch(
+
+    Exception e)
+    {
+        throw e;
+    }
     }
 
     @Override
