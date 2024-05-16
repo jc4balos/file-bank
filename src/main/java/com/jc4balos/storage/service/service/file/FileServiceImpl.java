@@ -27,6 +27,7 @@ import com.jc4balos.storage.service.model.FileData;
 import com.jc4balos.storage.service.repository.AccessLevelRepository;
 import com.jc4balos.storage.service.repository.FileRepository;
 import com.jc4balos.storage.service.service.file_access.FileAccessService;
+import com.jc4balos.storage.service.service.logging.LoggingService;
 import com.jc4balos.storage.service.util.FileEncryptor;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,6 +49,9 @@ public class FileServiceImpl implements FileService {
 
     @Autowired
     private FileAccessService fileAccessService;
+
+    @Autowired
+    private LoggingService loggingService;
 
     @Async
     public CompletableFuture<FileDtoView> createFile(HttpServletRequest request, FileDto fileDto)
@@ -100,6 +104,8 @@ public class FileServiceImpl implements FileService {
                 }
 
                 fileRepository.save(file);
+                loggingService.createLog((Long) session.getAttribute("userId"),
+                        "created " + file.getFileName());
 
                 FileDtoView fileDtoView = fileMapper.toDtoView(file);
 
@@ -136,6 +142,9 @@ public class FileServiceImpl implements FileService {
 
                 Map<String, String> response = new HashMap<>();
                 response.put("message", "File " + file.getFileName() + " moved to trash");
+
+                loggingService.createLog((Long) session.getAttribute("userId"),
+                        "deleted " + file.getFileName());
                 return response;
 
             } else {
@@ -158,6 +167,9 @@ public class FileServiceImpl implements FileService {
 
                 file.setActive(true);
                 fileRepository.save(file);
+
+                loggingService.createLog((Long) session.getAttribute("userId"),
+                        "restored " + file.getFileName());
 
                 return fileMapper.toDtoView(file);
 
@@ -188,6 +200,8 @@ public class FileServiceImpl implements FileService {
 
         try {
             FileInputStream fileInputStream = new FileInputStream(fileToDownload);
+            loggingService.createLog((Long) session.getAttribute("userId"),
+                    "downloaded " + file.getFileName());
             return new InputStreamResource(fileInputStream);
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException("File not found", e);

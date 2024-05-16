@@ -47,7 +47,7 @@ public class AdminServiceImpl implements AdminService {
     private FileMapper fileMapper;
 
     @Autowired
-    LoggingService loggingService;
+    private LoggingService loggingService;
 
     @Override
     @Transactional

@@ -29,7 +29,7 @@ public class AccessLevelServiceImpl implements AccessLevelService {
     private final MessageMapper messageMapper;
 
     @Autowired
-    LoggingService loggingService;
+    private LoggingService loggingService;
 
     @Override
     public Map<String, String> addAccessLevel(CreateAccessLevelDto createAccessLevelDto, HttpServletRequest request) {
