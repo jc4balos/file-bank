@@ -105,7 +105,7 @@ public class FileServiceImpl implements FileService {
 
                 fileRepository.save(file);
                 loggingService.createLog((Long) session.getAttribute("userId"),
-                        "created " + file.getFileName());
+                        "created file " + file.getFileName());
 
                 FileDtoView fileDtoView = fileMapper.toDtoView(file);
 
@@ -144,7 +144,7 @@ public class FileServiceImpl implements FileService {
                 response.put("message", "File " + file.getFileName() + " moved to trash");
 
                 loggingService.createLog((Long) session.getAttribute("userId"),
-                        "deleted " + file.getFileName());
+                        "deleted file " + file.getFileName());
                 return response;
 
             } else {
@@ -169,7 +169,7 @@ public class FileServiceImpl implements FileService {
                 fileRepository.save(file);
 
                 loggingService.createLog((Long) session.getAttribute("userId"),
-                        "restored " + file.getFileName());
+                        "restored file " + file.getFileName());
 
                 return fileMapper.toDtoView(file);
 
@@ -201,7 +201,7 @@ public class FileServiceImpl implements FileService {
         try {
             FileInputStream fileInputStream = new FileInputStream(fileToDownload);
             loggingService.createLog((Long) session.getAttribute("userId"),
-                    "downloaded " + file.getFileName());
+                    "downloaded file " + file.getFileName());
             return new InputStreamResource(fileInputStream);
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException("File not found", e);

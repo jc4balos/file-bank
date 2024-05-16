@@ -17,6 +17,7 @@ public class LoggingMapper {
         loggingDtoView.setUserFullName(eventLog.getUser().getFirstName() + " " + eventLog.getUser().getLastName());
         loggingDtoView.setTimestamp(eventLog.getTimeStamp());
         loggingDtoView.setUserName(eventLog.getUser().getUserName());
+        loggingDtoView.setEventMessage(eventLog.getEvent());
         return loggingDtoView;
     }
 
