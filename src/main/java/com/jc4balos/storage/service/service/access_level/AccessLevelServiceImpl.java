@@ -15,9 +15,11 @@ import com.jc4balos.storage.service.mapper.MessageMapper;
 import com.jc4balos.storage.service.model.AccessLevel;
 import com.jc4balos.storage.service.model.FileData;
 import com.jc4balos.storage.service.model.Folder;
+import com.jc4balos.storage.service.model.User;
 import com.jc4balos.storage.service.repository.AccessLevelRepository;
 import com.jc4balos.storage.service.repository.FileRepository;
 import com.jc4balos.storage.service.repository.FolderRepository;
+import com.jc4balos.storage.service.repository.UserRepository;
 import com.jc4balos.storage.service.service.file_access.FileAccessService;
 import com.jc4balos.storage.service.service.folder_access.FolderAccessService;
 import com.jc4balos.storage.service.service.logging.LoggingService;
@@ -44,6 +46,9 @@ public class AccessLevelServiceImpl implements AccessLevelService {
 
     @Autowired
     private FolderAccessService folderAccessService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public Map<String, String> addAccessLevel(CreateAccessLevelDto createAccessLevelDto, HttpServletRequest request) {
@@ -127,6 +132,13 @@ public class AccessLevelServiceImpl implements AccessLevelService {
             HttpSession session = request.getSession();
             if (session.getAttribute("userId") != null) {
                 AccessLevel accessLevel = accessLevelRepository.findById(accessLevelId).orElse(null);
+                List<User> usersWithCurrentAccessLevel = userRepository.findByAccessLevelId(accessLevelId);
+
+                if (!usersWithCurrentAccessLevel.isEmpty()) {
+                    System.out.println("there are users here");
+                    throw new RuntimeException("Cannot delete access level: Users are assigned.");
+                }
+
                 if (accessLevel != null) {
                     accessLevel.setActive(false);
                     accessLevelRepository.save(accessLevel);
