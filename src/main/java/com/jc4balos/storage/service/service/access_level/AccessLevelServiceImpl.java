@@ -13,7 +13,13 @@ import com.jc4balos.storage.service.exception.SessionNotFoundException;
 import com.jc4balos.storage.service.mapper.AccessLevelMapper;
 import com.jc4balos.storage.service.mapper.MessageMapper;
 import com.jc4balos.storage.service.model.AccessLevel;
+import com.jc4balos.storage.service.model.FileData;
+import com.jc4balos.storage.service.model.Folder;
 import com.jc4balos.storage.service.repository.AccessLevelRepository;
+import com.jc4balos.storage.service.repository.FileRepository;
+import com.jc4balos.storage.service.repository.FolderRepository;
+import com.jc4balos.storage.service.service.file_access.FileAccessService;
+import com.jc4balos.storage.service.service.folder_access.FolderAccessService;
 import com.jc4balos.storage.service.service.logging.LoggingService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,9 +33,17 @@ public class AccessLevelServiceImpl implements AccessLevelService {
     private final AccessLevelRepository accessLevelRepository;
     private final AccessLevelMapper accessLevelMapper;
     private final MessageMapper messageMapper;
+    private final FileRepository fileRepository;
+    private final FolderRepository folderRepository;
 
     @Autowired
     private LoggingService loggingService;
+
+    @Autowired
+    private FileAccessService fileAccessService;
+
+    @Autowired
+    private FolderAccessService folderAccessService;
 
     @Override
     public Map<String, String> addAccessLevel(CreateAccessLevelDto createAccessLevelDto, HttpServletRequest request) {
@@ -42,6 +56,19 @@ public class AccessLevelServiceImpl implements AccessLevelService {
                 accessLevel.setAccessLevelName(accessLevelName);
                 accessLevel.setActive(true);
                 accessLevelRepository.save(accessLevel);
+
+                List<FileData> allFiles = fileRepository.findAll();
+                for (FileData file : allFiles) {
+                    fileAccessService.addFileAccess(file.getFileId(), accessLevel.getAccessLevelId());
+                }
+
+                List<Folder> allFolders = folderRepository.findAll();
+                for (Folder folder : allFolders) {
+                    folderAccessService.addFolderAccess(folder.getFolderId(), accessLevel.getAccessLevelId());
+                }
+                // loop to all folders then add folderaccesses
+                // loop to all files then add file accessses
+
                 loggingService.createLog((Long) session.getAttribute("userId"),
                         "added access level " + accessLevelName);
                 return messageMapper.mapMessage("Access level " + accessLevel.getAccessLevelName() + " added");
