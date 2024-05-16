@@ -25,6 +25,7 @@ import com.jc4balos.storage.service.repository.FileAccessRepository;
 import com.jc4balos.storage.service.repository.FileRepository;
 import com.jc4balos.storage.service.repository.FolderAccessRepository;
 import com.jc4balos.storage.service.repository.FolderRepository;
+import com.jc4balos.storage.service.service.logging.LoggingService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -45,6 +46,9 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private FileMapper fileMapper;
 
+    @Autowired
+    LoggingService loggingService;
+
     @Override
     @Transactional
     public Map<String, Object> deleteMultipleTrashFiles(HttpServletRequest request, Long[] folderIds, Long[] fileIds) {
@@ -63,6 +67,8 @@ public class AdminServiceImpl implements AdminService {
                                 .orElseThrow(() -> new IllegalArgumentException("File does not exist"));
 
                         String filePath = file.getFilePath();
+                        loggingService.createLog((Long) session.getAttribute("userId"),
+                                "permanently deleted " + file.getFileName());
 
                         try {
                             Files.delete(Paths.get(filePath));
@@ -84,6 +90,9 @@ public class AdminServiceImpl implements AdminService {
                         // delete folder
                         Folder folder = folderRepository.findById(folderId)
                                 .orElseThrow(() -> new IllegalArgumentException("Folder does not exist"));
+
+                        loggingService.createLog((Long) session.getAttribute("userId"),
+                                "permanently deleted " + folder.getFolderName());
 
                         folderRepository.delete(folder);
                     }
