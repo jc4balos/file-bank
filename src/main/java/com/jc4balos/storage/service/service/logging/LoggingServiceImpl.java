@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.jc4balos.storage.service.dto.LoggingDtoView;
@@ -48,7 +49,8 @@ public class LoggingServiceImpl implements LoggingService {
             userRepository.findById((Long) session.getAttribute("userId"))
                     .orElseThrow(() -> new IllegalArgumentException("Session not found. Please login"));
 
-            Page<Logs> logsList = loggingRepository.getLogsByPage(PageRequest.of(pageNumber, 10));
+            Sort sort = Sort.by("timeStamp").descending();
+            Page<Logs> logsList = loggingRepository.findAll(PageRequest.of(pageNumber, 10, sort));
             List<LoggingDtoView> loggingDtos = logsList.stream().map(loggingMapper::toLoggingDtoView)
                     .collect(Collectors.toList());
 

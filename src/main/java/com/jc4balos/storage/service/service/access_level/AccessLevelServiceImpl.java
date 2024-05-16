@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jc4balos.storage.service.dto.AccessLevelDtoView;
@@ -13,6 +14,7 @@ import com.jc4balos.storage.service.mapper.AccessLevelMapper;
 import com.jc4balos.storage.service.mapper.MessageMapper;
 import com.jc4balos.storage.service.model.AccessLevel;
 import com.jc4balos.storage.service.repository.AccessLevelRepository;
+import com.jc4balos.storage.service.service.logging.LoggingService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -26,6 +28,9 @@ public class AccessLevelServiceImpl implements AccessLevelService {
     private final AccessLevelMapper accessLevelMapper;
     private final MessageMapper messageMapper;
 
+    @Autowired
+    LoggingService loggingService;
+
     @Override
     public Map<String, String> addAccessLevel(CreateAccessLevelDto createAccessLevelDto, HttpServletRequest request) {
 
@@ -34,10 +39,11 @@ public class AccessLevelServiceImpl implements AccessLevelService {
             if (session.getAttribute("userId") != null) {
                 String accessLevelName = createAccessLevelDto.getAccessLevelName();
                 AccessLevel accessLevel = new AccessLevel();
-                System.out.print(accessLevelName);
                 accessLevel.setAccessLevelName(accessLevelName);
                 accessLevel.setActive(true);
                 accessLevelRepository.save(accessLevel);
+                loggingService.createLog((Long) session.getAttribute("userId"),
+                        "added access level " + accessLevelName);
                 return messageMapper.mapMessage("Access level " + accessLevel.getAccessLevelName() + " added");
 
             } else {
