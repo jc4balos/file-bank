@@ -103,6 +103,8 @@ public class AccessLevelServiceImpl implements AccessLevelService {
                 if (accessLevel != null) {
                     accessLevel.setActive(false);
                     accessLevelRepository.save(accessLevel);
+                    loggingService.createLog((Long) session.getAttribute("userId"),
+                            "deactivated access level " + accessLevel.getAccessLevelName());
                     return messageMapper
                             .mapMessage("Access level " + accessLevel.getAccessLevelName() + " deactivated");
                 } else {
@@ -131,6 +133,8 @@ public class AccessLevelServiceImpl implements AccessLevelService {
                 if (accessLevel != null) {
                     accessLevel.setActive(true);
                     accessLevelRepository.save(accessLevel);
+                    loggingService.createLog((Long) session.getAttribute("userId"),
+                            "restored access level " + accessLevel.getAccessLevelName());
                     return messageMapper.mapMessage("Access level " + accessLevel.getAccessLevelName() + " restored");
                 } else {
                     return messageMapper.mapMessage("Access level not found");
