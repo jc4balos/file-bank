@@ -14,4 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(nativeQuery = true, value = "SELECT * FROM user_data WHERE active = 1")
     List<User> getAllActiveUsers();
 
+    @Query(nativeQuery = true, value = "SELECT * FROM user_data WHERE user_id = :userId")
+    User getUser(Long userId);
+
 }

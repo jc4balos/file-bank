@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 import com.jc4balos.storage.service.dto.LoggingDtoView;
 import com.jc4balos.storage.service.model.Logs;
-import com.jc4balos.storage.service.model.User;
 
 import lombok.Data;
 
@@ -12,12 +11,12 @@ import lombok.Data;
 @Component
 public class LoggingMapper {
 
-    public LoggingDtoView toLoggingDtoView(User user, Logs eventLog) {
+    public LoggingDtoView toLoggingDtoView(Logs eventLog) {
         LoggingDtoView loggingDtoView = new LoggingDtoView();
         loggingDtoView.setLogId(eventLog.getLogId());
-        loggingDtoView.setUserFullName(user.getFirstName() + " " + user.getLastName());
+        loggingDtoView.setUserFullName(eventLog.getUser().getFirstName() + " " + eventLog.getUser().getLastName());
         loggingDtoView.setTimestamp(eventLog.getTimeStamp());
-        loggingDtoView.setUserName(user.getUserName());
+        loggingDtoView.setUserName(eventLog.getUser().getUserName());
         return loggingDtoView;
     }
 

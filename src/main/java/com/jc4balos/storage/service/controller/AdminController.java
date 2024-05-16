@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.jc4balos.storage.service.exception.ApplicationExceptionHandler;
 import com.jc4balos.storage.service.service.admin.AdminService;
+import com.jc4balos.storage.service.service.logging.LoggingService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -18,6 +19,9 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
+
+    @Autowired
+    private LoggingService loggingService;
 
     @Autowired
     private ApplicationExceptionHandler applicationExceptionHandler;
@@ -37,6 +41,15 @@ public class AdminController {
     public ResponseEntity<?> getAllTrashFiles(HttpServletRequest request) {
         try {
             return new ResponseEntity<>(adminService.getAllTrashFiles(request), HttpStatus.OK);
+        } catch (Exception e) {
+            return applicationExceptionHandler.handleCustomException(e);
+        }
+    }
+
+    @GetMapping("/api/v1/logs/get-all-logs")
+    public ResponseEntity<?> getMethodName(HttpServletRequest request, @RequestParam int pageNumber) {
+        try {
+            return new ResponseEntity<>(loggingService.getLogs(request, pageNumber), HttpStatus.OK);
         } catch (Exception e) {
             return applicationExceptionHandler.handleCustomException(e);
         }
