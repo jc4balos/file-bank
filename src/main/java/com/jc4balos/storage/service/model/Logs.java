@@ -1,6 +1,6 @@
 package com.jc4balos.storage.service.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -39,6 +39,6 @@ public class Logs {
 
     @CreationTimestamp
     @Column(nullable = false, name = "time_stamp")
-    private LocalDate timeStamp;
+    private LocalDateTime timeStamp;
 
 }
