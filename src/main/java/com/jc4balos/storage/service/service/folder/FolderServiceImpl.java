@@ -26,6 +26,7 @@ import com.jc4balos.storage.service.repository.FolderAccessRepository;
 import com.jc4balos.storage.service.repository.FolderRepository;
 import com.jc4balos.storage.service.repository.UserRepository;
 import com.jc4balos.storage.service.service.folder_access.FolderAccessServiceImpl;
+import com.jc4balos.storage.service.service.logging.LoggingService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -53,6 +54,9 @@ public class FolderServiceImpl implements FolderService {
 
         @Autowired
         private FolderAccessServiceImpl folderAccessServiceImpl;
+
+        @Autowired
+        private LoggingService loggingService;
 
         @Override
         public FolderDto createFolder(FolderDto folderDto, HttpServletRequest request) {
@@ -85,7 +89,8 @@ public class FolderServiceImpl implements FolderService {
                         for (Long accessLevelIdItem : accessLevelIds) {
                                 folderAccessServiceImpl.addFolderAccess(folderId, accessLevelIdItem);
                         }
-
+                        loggingService.createLog((Long) session.getAttribute("userId"),
+                                        "created folder " + folder.getFolderName());
                         return folderDto;
 
                 } catch (Exception e) {
@@ -242,6 +247,9 @@ public class FolderServiceImpl implements FolderService {
 
                                 folderRepository.save(folder);
 
+                                loggingService.createLog((Long) session.getAttribute("userId"),
+                                                "modified folder " + folder.getFolderName());
+
                                 return folderMapper.toFolderDtoView(folder);
                         } else {
                                 throw new SessionNotFoundException("Session not found. Please log in.");
@@ -267,6 +275,9 @@ public class FolderServiceImpl implements FolderService {
                                 folder.setActive(false);
 
                                 folderRepository.save(folder);
+
+                                loggingService.createLog((Long) session.getAttribute("userId"),
+                                                "deleted folder " + folder.getFolderName());
 
                                 return messageMapper.mapMessage("Folder deleted successfully");
 
@@ -317,6 +328,9 @@ public class FolderServiceImpl implements FolderService {
 
                                 Map<String, String> response = new HashMap<>();
                                 response.put("message", folder.getFolderName() + "restored successfully");
+
+                                loggingService.createLog((Long) session.getAttribute("userId"),
+                                                "restored folder " + folder.getFolderName());
 
                                 return response;
                         } else {
