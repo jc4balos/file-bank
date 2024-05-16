@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ import com.jc4balos.storage.service.mapper.MessageMapper;
 import com.jc4balos.storage.service.mapper.UserMapper;
 import com.jc4balos.storage.service.model.User;
 import com.jc4balos.storage.service.repository.UserRepository;
+import com.jc4balos.storage.service.service.logging.LoggingService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,6 +40,9 @@ public class UserServiceImpl implements UserService {
 
     private final MessageMapper messageMapper;
 
+    @Autowired
+    private LoggingService loggingService;
+
     @Override
     public CreateUserDto createUser(CreateUserDto userDto, HttpServletRequest request) {
 
@@ -49,6 +54,8 @@ public class UserServiceImpl implements UserService {
                 user.setActive(true);
                 userRepository.save(user);
                 userDto.setUserId(user.getUserId());
+                loggingService.createLog(userId,
+                        "created user " + user.getUserName());
                 return userDto;
 
             } else {
@@ -93,6 +100,8 @@ public class UserServiceImpl implements UserService {
             if (sessionUserId != null) {
                 User modifiedUser = userMapper.modifyUser(userDto, userId);
                 userRepository.save(modifiedUser);
+                loggingService.createLog(userId,
+                        "modified user " + modifiedUser.getUserName());
                 return userDto;
             } else {
                 throw new SessionNotFoundException("Session not found. Please log in.");
@@ -114,6 +123,8 @@ public class UserServiceImpl implements UserService {
                 user.setActive(false);
                 String userName = user.getUserName();
                 userRepository.save(user);
+                loggingService.createLog(userId,
+                        "deactivated user " + user.getUserName());
                 return messageMapper.mapMessage("User " + userName + " deactivated");
             } else {
                 throw new SessionNotFoundException("Session not found. Please log in.");
@@ -136,6 +147,8 @@ public class UserServiceImpl implements UserService {
                 user.setActive(true);
                 String userName = user.getUserName();
                 userRepository.save(user);
+                loggingService.createLog(userId,
+                        "reactivated user " + user.getUserName());
                 return messageMapper.mapMessage("User " + userName + " activated");
             } else {
                 throw new SessionNotFoundException("Session not found. Please log in.");
@@ -166,7 +179,8 @@ public class UserServiceImpl implements UserService {
                 Map<String, Object> result = new HashMap<>();
                 String message = "Login successful";
                 result.put("message", message);
-
+                loggingService.createLog(user.getUserId(),
+                        user.getUserName() + " logged in");
                 return result;
             } else {
                 throw new CredentialsInvalidException("Invalid password");
@@ -187,6 +201,8 @@ public class UserServiceImpl implements UserService {
             if (user.getPassword().equals(passwordDto.getOldPassword())) {
                 user.setPassword(passwordDto.getNewPassword());
                 userRepository.save(user);
+                loggingService.createLog(sessionUserId,
+                        "changed the password of " + user.getUserName());
                 return messageMapper.mapMessage("Password changed successfully");
             } else {
                 throw new CredentialsInvalidException("Invalid old password");
