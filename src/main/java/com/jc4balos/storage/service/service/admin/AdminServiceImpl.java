@@ -91,10 +91,11 @@ public class AdminServiceImpl implements AdminService {
                         Folder folder = folderRepository.findById(folderId)
                                 .orElseThrow(() -> new IllegalArgumentException("Folder does not exist"));
 
+                        folderRepository.delete(folder);
+
                         loggingService.createLog((Long) session.getAttribute("userId"),
                                 "permanently deleted " + folder.getFolderName());
 
-                        folderRepository.delete(folder);
                     }
                 }
 
@@ -107,6 +108,7 @@ public class AdminServiceImpl implements AdminService {
             }
 
         } catch (Exception e) {
+            System.out.println(e);
             throw e;
         }
 

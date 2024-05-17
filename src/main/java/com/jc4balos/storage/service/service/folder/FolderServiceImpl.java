@@ -17,11 +17,13 @@ import com.jc4balos.storage.service.mapper.FolderMapper;
 import com.jc4balos.storage.service.mapper.MessageMapper;
 import com.jc4balos.storage.service.model.AccessLevel;
 import com.jc4balos.storage.service.model.FileAccess;
+import com.jc4balos.storage.service.model.FileData;
 import com.jc4balos.storage.service.model.Folder;
 import com.jc4balos.storage.service.model.FolderAccess;
 import com.jc4balos.storage.service.model.User;
 import com.jc4balos.storage.service.repository.AccessLevelRepository;
 import com.jc4balos.storage.service.repository.FileAccessRepository;
+import com.jc4balos.storage.service.repository.FileRepository;
 import com.jc4balos.storage.service.repository.FolderAccessRepository;
 import com.jc4balos.storage.service.repository.FolderRepository;
 import com.jc4balos.storage.service.repository.UserRepository;
@@ -30,6 +32,7 @@ import com.jc4balos.storage.service.service.logging.LoggingService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -42,6 +45,8 @@ public class FolderServiceImpl implements FolderService {
 
         private final FolderAccessRepository folderAccessRepository;
         private final FileAccessRepository fileAccessRepository;
+
+        private final FileRepository fileRepository;
 
         @Autowired
         private FolderMapper folderMapper;
@@ -257,12 +262,14 @@ public class FolderServiceImpl implements FolderService {
                         }
 
                 } catch (Exception e) {
+                        System.out.println(e);
                         throw e;
                 }
 
         }
 
         @Override
+        @Transactional
         public Map<String, String> deleteFolder(Long folderId, HttpServletRequest request) {
                 try {
                         HttpSession session = request.getSession();
@@ -273,6 +280,8 @@ public class FolderServiceImpl implements FolderService {
                                                                 "Folder does not exist"));
 
                                 folder.setActive(false);
+
+                                setDescendantsInactive(folder);
 
                                 folderRepository.save(folder);
 
@@ -287,7 +296,29 @@ public class FolderServiceImpl implements FolderService {
 
                 } catch (Exception e) {
                         throw e;
+                }
+        }
 
+        // Helper method for recursive deactivation
+        private void setDescendantsInactive(Folder folder) {
+                // Fetch child folders recursively (implementation depends on your repository)
+                List<Folder> childFolders = folderRepository.findByActiveTrueAndFolderParentId(folder.getFolderId());
+
+                // Set child folders to inactive
+                for (Folder childFolder : childFolders) {
+                        childFolder.setActive(false);
+                        folderRepository.save(childFolder);
+
+                        // Recursively call for nested child folders (if necessary)
+                        setDescendantsInactive(childFolder);
+                }
+
+                // Fetch and set associated files to inactive
+                List<FileData> associatedFiles = fileRepository.findByActiveTrueAndFolderParentId(folder.getFolderId());
+                for (FileData file : associatedFiles) {
+                        // Update file status based on your logic (e.g., set a flag)
+                        file.setActive(false); // Assuming an 'isActive' field in FileAccess
+                        fileRepository.save(file);
                 }
         }
 
