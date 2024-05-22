@@ -1,8 +1,6 @@
-# OPA File Bank
+# Storage Service
 
-This is the backend part of the OPA File Bank aka storage-service. This uses springboot and and MySql as a database system.
-
-OPA File Bank is a file storage web application in a local area network setting wherein company can manage the files used in its workflow. It supports any file type.
+This uses springboot and and MySql as a database system.
 
 ## Features
 
