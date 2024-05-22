@@ -56,6 +56,28 @@ public class AdminServiceImpl implements AdminService {
         try {
             HttpSession session = request.getSession();
             if (session.getAttribute("userId") != null) {
+
+                if (folderIds != null) {
+                    for (Long folderId : folderIds) {
+                        // delete folder accesses
+                        List<FolderAccess> folderAccesses = folderAccessRepository.findByFolderId(folderId)
+                                .orElseThrow(() -> new IllegalArgumentException("Folder does not exist"));
+
+                        folderAccessRepository.deleteAll(folderAccesses);
+
+                        // delete folder
+                        Folder folder = folderRepository.findById(folderId)
+                                .orElseThrow(() -> new IllegalArgumentException("Folder does not exist"));
+
+                        folderRepository.delete(folder);
+                        // solution add permanently delete boolean column on both tables
+
+                        loggingService.createLog((Long) session.getAttribute("userId"),
+                                "permanently deleted " + folder.getFolderName());
+
+                    }
+                }
+
                 if (fileIds != null) {
                     for (Long fileId : fileIds) {
                         // delete file
@@ -76,26 +98,6 @@ public class AdminServiceImpl implements AdminService {
                         } catch (IOException e) {
                             throw new RuntimeException("Failed to delete file");
                         }
-                    }
-                }
-
-                if (folderIds != null) {
-                    for (Long folderId : folderIds) {
-                        // delete folder accesses
-                        List<FolderAccess> folderAccesses = folderAccessRepository.findByFolderId(folderId)
-                                .orElseThrow(() -> new IllegalArgumentException("Folder does not exist"));
-
-                        folderAccessRepository.deleteAll(folderAccesses);
-
-                        // delete folder
-                        Folder folder = folderRepository.findById(folderId)
-                                .orElseThrow(() -> new IllegalArgumentException("Folder does not exist"));
-
-                        folderRepository.delete(folder);
-
-                        loggingService.createLog((Long) session.getAttribute("userId"),
-                                "permanently deleted " + folder.getFolderName());
-
                     }
                 }
 
